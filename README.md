@@ -25,7 +25,7 @@ slackTerminal.init({
 
 ```
 
-Checkout [this](#) sample app to get started straight away and to know about options and configuration parameters to customize the behavior.
+Checkout [this](https://github.com/ggauravr/slack-sample-cli) sample app to get started straight away and to know about options and configuration parameters to customize the behavior.
 
 ---
 ## Installation
@@ -45,7 +45,7 @@ Checkout [this](#) sample app to get started straight away and to know about opt
 ---
 ### Help and Links
 
-- [Sample app to get started](#)
+- [Sample app to get started](https://github.com/ggauravr/slack-sample-cli)
 - [Slack's awesome API](https://api.slack.com/)
 - [Slack Node Client](https://github.com/slackhq/node-slack-client)
 - [How to create and publish your first npm module](https://medium.com/@jdaudier/how-to-create-and-publish-your-first-node-js-module-444e7585b738#.blw7wmjwl)
