@@ -9,8 +9,8 @@ Helps build a command-line system in Slack, to create a custom vocabulary for yo
 ## Motivation
 
 This module was built to abstract away some of the basic tasks of massaging a message posted on Slack channel, before giving it to the bot.
-That said, this is an opinionated implementation, because it's as it is, limits to building a linux shell-like environment, where the first word
-of the message is considered the command and the words that follow, the arguments. More in the code example section below.
+That said, this is an opinionated implementation, because as it is, it limits to building a linux shell-like environment, where the first word
+of the message is taken as the command and the words that follow, the arguments. You can find a sample app built to use this module from the links below.
 
 ---
 ## Usage
@@ -25,7 +25,7 @@ slackTerminal.init({
 
 ```
 
-Checkout [this](https://github.com/ggauravr/slack-sample-cli) sample app to get started straight away and to know about options and configuration parameters to customize the behavior.
+Checkout [this](https://github.com/ggauravr/slack-sample-cli) app to get started and to know more about the options and configuration parameters to customize the behavior.
 
 ---
 ## Installation
