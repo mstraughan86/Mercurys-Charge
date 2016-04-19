@@ -1,8 +1,12 @@
 'use strict';
 
 var path 		= require('path'),
-	configUtil	= require('./config'),
-	regexUtil	= require('./regex'),
+	
+	util = {
+		config: require('./config'),
+		regex: require('./regex')
+	},
+
 	cmdPattern 	= '';
 
 /**
@@ -13,7 +17,7 @@ var path 		= require('path'),
  * @return { none }
  */
 var	_setCommandPattern = function () {
-	var commands = require(path.resolve(configUtil.get('CONFIG_DIR'), 'commands')),
+	var commands = require(path.resolve(util.config.get('CONFIG_DIR'), 'commands')),
 		command,
 		aliases;
 	
@@ -42,13 +46,13 @@ var _getCommand = function(userCommand) {
 		matches = cmdPattern.match(pattern) && cmdPattern.match(pattern)[0];
 
 	if (!matches) {
-		return configUtil.get('ERROR_COMMAND');
+		return util.config.get('ERROR_COMMAND');
 	}
 
 	var	strippedMatch = ( matches.match(/\[(.*)\]/) && matches.match(/\[(.*)\]/)[1] ) || '',
 		aliases = strippedMatch.split(',') || [];
 	
-	return aliases.length ? aliases[0] : configUtil.get('ERROR_COMMAND');
+	return aliases.length ? aliases[0] : util.config.get('ERROR_COMMAND');
 
 };
 
@@ -67,8 +71,8 @@ var init = function () {
  * @return {Object} - Object containing user, channel, command and arguments, all parsed from the user message
  */
 var parse = function (message) {
-	var cleanMessage 	= message.text && message.text.trim().replace(regexUtil.regex.multi_spaces, configUtil.get('COMMAND_DELIM')),
-		tokens			= cleanMessage.split(configUtil.get('COMMAND_DELIM')),
+	var cleanMessage 	= message.text && message.text.trim().replace(util.regex.regex.multi_spaces, util.config.get('COMMAND_DELIM')),
+		tokens			= cleanMessage.split(util.config.get('COMMAND_DELIM')),
 		userCommand		= tokens.length && tokens[0],
 		command 		= _getCommand(userCommand),
 		args;
@@ -81,23 +85,27 @@ var parse = function (message) {
 				tokens
 					
 					// join by space to get back original text
-					.join(configUtil.get('COMMAND_DELIM'))
+					.join(util.config.get('COMMAND_DELIM'))
 					
 					// replace spaces between quoted strings with space replacement pattern
 					// this is being done to give back quoted arguments as a single entity
-					.replace(regexUtil.regex.between_quotes, function (match, matchUnquoted) {
-						matchUnquoted = matchUnquoted.replace(/\s/g, configUtil.get('SPACE_REPLACEMENT'));
+					.replace(util.regex.regex.between_quotes, function (match, matchUnquoted) {
+						matchUnquoted = matchUnquoted.replace(/\s/g, util.config.get('SPACE_REPLACEMENT'));
 						
 						return match.replace(match, matchUnquoted);
 					})
 
 					// split them back by space
 					// this time, quoted strings will not be split
-					.split(configUtil.get('COMMAND_DELIM'))
+					.split(util.config.get('COMMAND_DELIM'))
 				: 
 
 				[];
 	
+	if (command === util.config.get('ERROR_COMMAND')) {
+		args.unshift(userCommand);
+	}
+
 	return {
 		command: command,
 		args: args
@@ -105,11 +113,11 @@ var parse = function (message) {
 };
 
 var getCommandObjects = function () {
-	return JSON.parse(JSON.stringify(require(path.resolve(configUtil.get('CONFIG_DIR'), 'commands'))));
+	return JSON.parse(JSON.stringify(require(path.resolve(util.config.get('CONFIG_DIR'), 'commands'))));
 };
 
 var getResponseObjects = function () {
-	return JSON.parse(JSON.stringify(require(path.resolve(configUtil.get('CONFIG_DIR'), 'responses'))));
+	return JSON.parse(JSON.stringify(require(path.resolve(util.config.get('CONFIG_DIR'), 'responses'))));
 };
 
 exports.init = init;

@@ -40,7 +40,7 @@ describe('Config util library tests', function () {
 
 		assert.equal(configUtil.get('CONFIG_DIR'), path.resolve(testConfig.project_root, '../../config'));
 		assert.equal(configUtil.get('COMMAND_DIR'), path.resolve(testConfig.project_root, '../../commands'));
-		assert.equal(configUtil.get('ERROR_COMMAND'), 'app-error');
+		assert.equal(configUtil.get('ERROR_COMMAND'), 'error');
 		assert.equal(configUtil.get('SPACE_REPLACEMENT'), '{SPACE}');
 	});
 
