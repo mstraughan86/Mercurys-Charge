@@ -1,8 +1,17 @@
 'use strict';
 
-var configUtil	= require('./util/config'),
-	commandUtil	= require('./util/command'),
-	path		= require('path'),
+var logger = require('winston'),
+	
+	MemoryDataStore = require('@slack/client').MemoryDataStore,
+	dataStore = new MemoryDataStore(),
+
+	util = {
+		config: require('./util/config'),
+		command: require('./util/command')
+	},
+	
+	path = require('path'),
+	
 	handlers,
 	commands,
 	slackClient;
@@ -19,16 +28,17 @@ var configUtil	= require('./util/config'),
 var init = function (client) {
 
 	slackClient = client;
-
 	handlers = {};
 	
-	commandUtil.init();
+	util.command.init();
 
-	commands = require(path.resolve(configUtil.get('CONFIG_DIR'), 'commands'));
+	commands = require(path.resolve(util.config.get('CONFIG_DIR'), 'commands'));
 
 	Object.keys(commands).forEach(function (command) {
-		handlers[command] = require(path.resolve(configUtil.get('COMMAND_DIR'), command));
+		handlers[command] = require(path.resolve(util.config.get('COMMAND_DIR'), command));
 	});
+
+	logger.info('Command dispatcher initialized');
 };
 
 /**
@@ -45,18 +55,18 @@ var handle = function (msg) {
 	var data;
 
 	// gets command and args parametrs
-	data = commandUtil.parse(msg);
+	data = util.command.parse(msg);
 	
-	data.user = slackClient.getUserByID(msg.user);
-	data.channel = slackClient.getChannelGroupOrDMByID(msg.channel);
+	data.user = msg.user;
+	data.channel = msg.channel;
 	data.commandConfig = commands[data.command];
 	
 	// respond only for non-bot user messages
-	if (data.user && !data.user.is_bot) {
+	if (data.user && !slackClient.dataStore.getUserById(data.user).is_bot) {
 		if (!handlers[data.command]) {
-			throw new Error('Command ' + data.command + ' not found in ' + configUtil.get('COMMAND_DIR') + ' directory');
+			throw new Error('Command ' + data.command + ' not found in ' + util.config.get('COMMAND_DIR') + ' directory');
 		}
-
+		
 		handlers[data.command](data);
 	}
 };

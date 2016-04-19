@@ -28,7 +28,7 @@ describe('Command util library tests', function () {
 
 		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));
 		assert.isArray(response.args);
-		assert.equal(0, response.args.length);
+		assert.equal(1, response.args.length);
 	});
 
 	it('should test parse method with invalid command and valid arguments', function () {
@@ -38,9 +38,10 @@ describe('Command util library tests', function () {
 
 		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));
 		assert.isArray(response.args);
-		assert.equal(2, response.args.length);
-		assert.equal(response.args[0], 'this');
-		assert.equal(response.args[1], 'that');
+		assert.equal(3, response.args.length);
+		assert.equal(response.args[0], 'invalidcmd');
+		assert.equal(response.args[1], 'this');
+		assert.equal(response.args[2], 'that');
 	});
 
 	it('should test parse method with invalid command and arguments with quoted spaced strings', function () {
@@ -50,10 +51,11 @@ describe('Command util library tests', function () {
 
 		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));
 		assert.isArray(response.args);
-		assert.equal(3, response.args.length);
-		assert.equal(response.args[0], 'this{SPACE}arg');
-		assert.equal(response.args[1], 'and');
-		assert.equal(response.args[2], 'that{SPACE}arg');
+		assert.equal(4, response.args.length);
+		assert.equal(response.args[0], 'invalidcmd');
+		assert.equal(response.args[1], 'this{SPACE}arg');
+		assert.equal(response.args[2], 'and');
+		assert.equal(response.args[3], 'that{SPACE}arg');
 
 	});
 

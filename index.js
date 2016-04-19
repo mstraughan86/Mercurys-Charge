@@ -1,57 +1,76 @@
 'use strict';
 
-var Slack 		= require('slack-client'),
-	configUtil	= require('./util/config'),
-	commandUtil	= require('./util/command'),
+var logger		= require('winston'),
+
+	RtmClient 	= require('@slack/client').RtmClient,
+	WebClient 	= require('@slack/client').WebClient,
+	MemoryDataStore = require('@slack/client').MemoryDataStore,
+
+	RTM_EVENTS	= require('@slack/client').RTM_EVENTS,
+	CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS,
+	
+	util = {
+		config: require('./util/config'),
+		command: require('./util/command')
+	},
+	
 	dispatcher	= require('./dispatcher'),
-	slackClient,
-	options = {
-		AUTO_RECONNECT 	: true,
-		AUTO_MARK 		: true
-	};
+	rtmClient, webClient;
 
 var _listen = function () {
+	dispatcher.init(rtmClient);
 
-	dispatcher.init(slackClient);
-
-	slackClient.on('message', function (message) {
+	rtmClient.on(RTM_EVENTS.MESSAGE, function (message) {
 		dispatcher.handle(message);
 	});
 };
 
 var _login = function () {
 	
-	if (!slackClient) {
-		throw new Error('Slack client not initialized');
+	if (!rtmClient) {
+		throw new Error('Slack RTM client not initialized');
 	}
 
-	slackClient.login();
+	logger.info('Initiating RTM client authentication');
+	rtmClient.start();
+
+	rtmClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
+		logger.info('RTM client authenticated.');
+
+		_listen();
+	});
 };
 
-var getSlackClient = function () {
-	return slackClient;
+var getRTMClient = function () {
+	return rtmClient;
 };
 
-var init = function (opts, config) {
+var getWebClient = function () {
+	return webClient;
+};
+
+var init = function (token, opts, config) {
 	
-	if (!opts || !opts.SLACK_TOKEN) {
-		throw new Error('SLACK_TOKEN not passed with opts in init');
+	if (!token) {
+		throw new Error('slack token not passed with opts in init');
 	}
 
-	options.SLACK_TOKEN 	= opts.SLACK_TOKEN;
-	options.AUTO_RECONNECT  = opts.AUTO_RECONNECT || options.AUTO_RECONNECT;
-	options.AUTO_MARK 		= opts.AUTO_MARK || options.AUTO_MARK;
-	
-	slackClient = new Slack(options.SLACK_TOKEN, options.AUTO_RECONNECT, options.AUTO_MARK);
+	// set defaults if not provided
+	opts.autoReconnect = opts.autoReconnect || true;
+	opts.logLevel = opts.logLevel || 'error';
+	opts.dataStore = new MemoryDataStore({});
 
-	configUtil.init(config);
+	rtmClient = new RtmClient(token, opts);
+	webClient = new WebClient(token, opts);
+
+	util.config.init(config);
 	
-	_listen();
 	_login();
 };
 
 
 exports.init 				= init;
-exports.getCommandObjects 	= commandUtil.getCommandObjects;
-exports.getResponseObjects 	= commandUtil.getResponseObjects;
-exports.getSlackClient 		= getSlackClient;
+exports.getCommandObjects 	= util.command.getCommandObjects;
+exports.getResponseObjects 	= util.command.getResponseObjects;
+exports.getRTMClient 		= getRTMClient;
+exports.getWebClient		= getWebClient;
