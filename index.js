@@ -71,7 +71,7 @@ var init = function (token, opts, config) {
 
 
 exports.init 				= init;
-exports.getCommandObjects 	= util.command.getCommandObjects;
-exports.getResponseObjects 	= util.command.getResponseObjects;
+exports.getCommands 		= util.command.getCommandObjects;
+exports.getResponses 		= util.command.getResponseObjects;
 exports.getRTMClient 		= getRTMClient;
 exports.getWebClient		= getWebClient;

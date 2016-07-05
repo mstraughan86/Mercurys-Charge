@@ -20,8 +20,8 @@ of the message is taken as the command and the words that follow, the arguments.
 var slackTerminal = require('slack-terminalize');
 
 slackTerminal.init('<your-slack-token-here>', 
-    {}, // slack-client options
-    {} // configurations for the app
+    {}, // slack-client options: https://github.com/slackhq/node-slack-client/blob/master/lib/clients/rtm/client.js
+    {} // configurations for the app: https://github.com/ggauravr/slack-terminalize/blob/master/util/config.js
 });
 
 ```
