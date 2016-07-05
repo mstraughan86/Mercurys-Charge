@@ -9,18 +9,27 @@ var logger = require('winston'),
 		config: require('./util/config'),
 		command: require('./util/command')
 	},
-	
+
 	path = require('path'),
-	
+
 	handlers,
 	commands,
 	slackClient;
 
 /**
+ * Get dispatcher status
+ *
+ * @return boolean
+ */
+var isInitialized = function() {
+	return handlers.length > 0;
+}
+
+/**
  * Reads commands.json from CONFIG_DIR and sets up handlers.
  * Handlers are expected to have the same name as the command, i.e.
  * of the pattern {command-name}.js
- * 
+ *
  * @param  { object } Slack client
  * @return { none }
  *
@@ -56,20 +65,21 @@ var handle = function (msg) {
 
 	// gets command and args parametrs
 	data = util.command.parse(msg);
-	
+
 	data.user = msg.user;
 	data.channel = msg.channel;
 	data.commandConfig = commands[data.command];
-	
+
 	// respond only for non-bot user messages
 	if (data.user && !slackClient.dataStore.getUserById(data.user).is_bot) {
 		if (!handlers[data.command]) {
 			throw new Error('Command ' + data.command + ' not found in ' + util.config.get('COMMAND_DIR') + ' directory');
 		}
-		
+
 		handlers[data.command](data);
 	}
 };
 
 exports.init 	= init;
 exports.handle 	= handle;
+exports.isInitialized = isInitialized;
