@@ -1,6 +1,6 @@
 {
   "name": "slack-terminalize",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Module to help build a custom command-line vocabulary for your bot",
   "main": "index.js",
   "scripts": {
