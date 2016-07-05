@@ -22,7 +22,7 @@ var logger = require('winston'),
  * @return boolean
  */
 var isInitialized = function() {
-	return handlers.length > 0;
+	return handlers !== undefined && handlers.length > 0;
 }
 
 /**
