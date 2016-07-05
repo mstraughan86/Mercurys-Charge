@@ -35,9 +35,10 @@ var _login = function () {
 	rtmClient.start();
 
 	rtmClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
-		logger.info('RTM client authenticated.');
-
-		_listen();
+		if (!dispatcher.isInitialized()) {
+			logger.info('RTM client authenticated.');
+			_listen();
+		}
 	});
 };
 
