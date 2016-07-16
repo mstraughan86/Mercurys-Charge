@@ -139,6 +139,17 @@ describe('Command util library tests', function () {
 		assert.equal(response.args[0], '');
 	});
 
+	it('should parse spical character without error', function () {
+		var response  = commandUtil.parse({
+			text: "+[.?*^$[\]\\(){}|-]"
+		});
+
+		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));
+		assert.isArray(response.args);
+		assert.equal(1, response.args.length);
+		assert.equal(response.args[0], '+[.?*^$[\]\\(){}|-]');
+	});
+
 	it('should test fetching command objects from the json defined in config directory', function (){
 		var response = commandUtil.getCommandObjects();
 

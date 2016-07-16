@@ -45,7 +45,7 @@ var _getCommand = function(userCommand) {
 	if (!userCommand) {
 		return util.config.get('ERROR_COMMAND');
 	}
-
+  userCommand = userCommand.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 	var pattern = new RegExp('\\[(([^\\[]*[,])?' + userCommand + '[^\\]]*)\\]', 'i'),
 		matches = cmdPattern.match(pattern) && cmdPattern.match(pattern)[0];
 
