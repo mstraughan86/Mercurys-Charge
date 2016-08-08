@@ -14,8 +14,7 @@ describe('Config util library tests', function () {
 	it('should test config properties passed to config.init', function () {
 		configUtil.init({
 			a: 'A',
-			b: 'B',
-			BOT_NAME: ['bot']
+			b: 'B'
 		});
 
 		assert.equal(configUtil.get('a'), 'A');
@@ -27,35 +26,22 @@ describe('Config util library tests', function () {
 			COMMAND_DIR : path.resolve(testConfig.test_root, 'commands'),
 			CONFIG_DIR 	: path.resolve(testConfig.test_root, 'config'),
 			ERROR_COMMAND: 'test-error',
-			SPACE_REPLACEMENT: '#SPACE#',
-			BOT_NAME: ['Bot', 'Robot']
+			SPACE_REPLACEMENT: '#SPACE#'
 		});
 
 		assert.equal(configUtil.get('COMMAND_DIR'), path.resolve(testConfig.test_root, 'commands'));
 		assert.equal(configUtil.get('CONFIG_DIR'), path.resolve(testConfig.test_root, 'config'));
 		assert.equal(configUtil.get('ERROR_COMMAND'), 'test-error');
 		assert.equal(configUtil.get('SPACE_REPLACEMENT'), '#SPACE#');
-		assert.deepEqual(configUtil.get('BOT_NAME'), ['BOT', 'ROBOT']);
 	});
 
 	it('should test default config_dir, command_dir, space_replacement and error_command, when not provided with config.init', function () {
-		configUtil.init({BOT_NAME: ["Bot"]});
+		configUtil.init();
 
 		assert.equal(configUtil.get('CONFIG_DIR'), path.resolve(testConfig.project_root, '../../config'));
 		assert.equal(configUtil.get('COMMAND_DIR'), path.resolve(testConfig.project_root, '../../commands'));
 		assert.equal(configUtil.get('ERROR_COMMAND'), 'error');
 		assert.equal(configUtil.get('SPACE_REPLACEMENT'), '{SPACE}');
-	});
-
-
-	it('should error when no bot name configure', function () {
-
-		try {
-			configUtil.init();
-			assert.fail();
-		} catch (e) {
-			assert.equal(e.message, "Bot name is required.");
-		}
 	});
 
 });

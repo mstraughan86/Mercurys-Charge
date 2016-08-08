@@ -9,32 +9,21 @@ describe('Command util library tests', function () {
 
 
 	before(function () {
-
+		
 		configUtil = require(path.resolve(testConfig.project_root, 'util/config'));
 		commandUtil = require(path.resolve(testConfig.project_root, 'util/command'));
 
 		configUtil.init({
-			CONFIG_DIR: path.resolve(testConfig.test_root, 'config'),
-			BOT_NAME: ['bot', 'robot']
+			CONFIG_DIR: path.resolve(testConfig.test_root, 'config')
 		});
 
 		commandUtil.init();
 
 	});
 
-	it('should not parse when command does not start with bot name', function () {
-		var response = commandUtil.parse({
-			text: 'invalidcmd'
-		});
-
-		assert.equal(response.command, configUtil.get('SKIPPED_COMMAND'));
-		assert.isArray(response.args);
-		assert.equal(1, response.args.length);
-	});
-
 	it('should test parse method with invalid command and undefined arguments', function () {
 		var response = commandUtil.parse({
-			text: 'bot invalidcmd'
+			text: 'invalidcmd'
 		});
 
 		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));
@@ -44,7 +33,7 @@ describe('Command util library tests', function () {
 
 	it('should test parse method with invalid command and valid arguments', function () {
 		var response = commandUtil.parse({
-			text: 'bot invalidcmd this that'
+			text: 'invalidcmd this that'
 		});
 
 		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));
@@ -57,7 +46,7 @@ describe('Command util library tests', function () {
 
 	it('should test parse method with invalid command and arguments with quoted spaced strings', function () {
 		var response = commandUtil.parse({
-			text: 'bot invalidcmd "this arg" and \'that arg\''
+			text: 'invalidcmd "this arg" and \'that arg\''
 		});
 
 		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));
@@ -72,7 +61,7 @@ describe('Command util library tests', function () {
 
 	it('should test parse method with valid command and undefined arguments', function () {
 		var response = commandUtil.parse({
-			text: 'bot cmd-a'
+			text: 'cmd-a'
 		});
 
 		assert.equal('cmd-a', response.command);
@@ -82,7 +71,7 @@ describe('Command util library tests', function () {
 
 	it('should test parse method with valid command alias and valid arguments', function () {
 		var response = commandUtil.parse({
-			text: 'bot commanda this that'
+			text: 'commanda this that'
 		});
 
 		assert.equal('cmd-a', response.command);
@@ -94,7 +83,7 @@ describe('Command util library tests', function () {
 
 	it('should test parse method with valid command and arguments with quoted spaced strings', function () {
 		var response = commandUtil.parse({
-			text: 'bot cmda "this arg" and \'that arg\''
+			text: 'cmda "this arg" and \'that arg\''
 		});
 
 		assert.equal('cmd-a', response.command);
@@ -108,7 +97,7 @@ describe('Command util library tests', function () {
 
 	it('should test parse method for removal of continuous multiple spaces', function () {
 		var response = commandUtil.parse({
-			text: '  bot cmda "this arg" and \'that    arg\'    '
+			text: '   cmda "this arg" and \'that    arg\'    '
 		});
 
 		assert.equal('cmd-a', response.command);
@@ -125,12 +114,11 @@ describe('Command util library tests', function () {
 
 		configUtil.init({
 			CONFIG_DIR: path.resolve(testConfig.test_root, 'config'),
-			SPACE_REPLACEMENT: '#SPACE#',
-			BOT_NAME: ['bot', 'robot']
+			SPACE_REPLACEMENT: '#SPACE#'
 		});
 
 		response  = commandUtil.parse({
-			text: '  bot cmda "this arg" and \'that    arg\'    '
+			text: '   cmda "this arg" and \'that    arg\'    '
 		});
 
 		assert.equal('cmd-a', response.command);
@@ -145,15 +133,15 @@ describe('Command util library tests', function () {
 	it('should test parse method without text e.g. emoji', function () {
 		var response  = commandUtil.parse({});
 
-		assert.equal(response.command, configUtil.get('SKIPPED_COMMAND'));
+		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));
 		assert.isArray(response.args);
 		assert.equal(1, response.args.length);
-		assert.equal(response.args[0], undefined);
+		assert.equal(response.args[0], '');
 	});
 
 	it('should parse spical character without error', function () {
 		var response  = commandUtil.parse({
-			text: "bot +[.?*^$[\]\\(){}|-]"
+			text: "+[.?*^$[\]\\(){}|-]"
 		});
 
 		assert.equal(response.command, configUtil.get('ERROR_COMMAND'));

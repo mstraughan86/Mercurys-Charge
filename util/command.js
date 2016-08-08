@@ -75,17 +75,10 @@ var init = function () {
  */
 var parse = function (message) {
 	var cleanMessage 	= message.text && message.text.trim().replace(util.regex.regex.multi_spaces, util.config.get('COMMAND_DELIM')) || '',
-		tokens					= cleanMessage.split(util.config.get('COMMAND_DELIM')),
-		botName					= tokens.length && tokens[0].toUpperCase(),
-		isCallBot       = util.config.get('BOT_NAME').indexOf(botName) > -1,
-		userCommand			= tokens.length && tokens[1],
-		command 				= _getCommand(userCommand),
+		tokens			= cleanMessage.split(util.config.get('COMMAND_DELIM')),
+		userCommand		= tokens.length && tokens[0],
+		command 		= _getCommand(userCommand),
 		args;
-
-
-
-	// get rid of the robot name
-	tokens.shift();
 
 	// get rid of the command
 	tokens.shift();
@@ -114,9 +107,6 @@ var parse = function (message) {
 
 	if (command === util.config.get('ERROR_COMMAND')) {
 		args.unshift(userCommand);
-	}
-	if (!isCallBot) {
-		command = util.config.get('SKIPPED_COMMAND');
 	}
 
 	return {

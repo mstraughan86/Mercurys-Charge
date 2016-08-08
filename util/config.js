@@ -14,7 +14,7 @@ var path = require('path'),
  * 	  the module looks for this named file in COMMAND_DIR directory. For example, if ERROR_COMMAND is 'app-error',
  * 	  it looks for and calls 'error.js' from COMMAND_DIR directory
  * 5. COMMAND_DELIM: delimiter to split message into tokens(not configurable, uses space (' ') character)
- *
+ * 
  * Since this module is to be used by some parent module, usually this project will be found inside node_modules,
  * hence the default directory for CONFIG_DIR and COMMAND_DIR are ../../../<config|commands>, that's equaivalent to
  * <parent-project-root>/<config|commands>.
@@ -34,13 +34,6 @@ var init = function (userConfig) {
 	config['SPACE_REPLACEMENT'] 	= config['SPACE_REPLACEMENT'] || '{SPACE}';
 	config['ERROR_COMMAND'] 		= config['ERROR_COMMAND'] || 'error';
 	config['COMMAND_DELIM'] 		= ' ';
-	config['SKIPPED_COMMAND']   = config['SKIPPED_COMMAND'] || 'skipped';
-
-	if (config['BOT_NAME'] === undefined) {
-		throw new Error("Bot name is required.");
-	}
-
-	config['BOT_NAME'] = config['BOT_NAME'].map((item) => {return item.toUpperCase()});
 
 };
 
