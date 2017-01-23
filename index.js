@@ -99,6 +99,8 @@ handler.on('error', function (err) {
 });
 
 handler.on('push', function (event) {
+  
+  
 	postRequest('IIIII ....X - Received a push event for ' + 
     event.payload.repository.name + 
 	' to ' + 
@@ -106,7 +108,9 @@ handler.on('push', function (event) {
   console.log('Received a push event for %s to %s',
     event.payload.repository.name,
     event.payload.ref);
-	//autoupdater.fire('check');
+autoupdater.fire('check');
+        
+        
 });
 
 // and Finally
