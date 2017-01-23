@@ -1,9 +1,14 @@
 {
-  "name": "slack-sample-cli",
-  "version": "1.0.0",
-  "description": "Sample app to show working with slack-terminalize module",
+  "name": "Emeralda-AI",
+  "version": "0.0.1",
+  "auto-updater": {
+    "repo": "/mstraughan86/Emeralda-AI",
+    "branch": "master"
+  },
+  "description": "",
   "main": "index.js",
   "dependencies": {
+    "auto-updater": "^1.0.2",
     "github-webhook-handler": "^0.6.0",
     "http": "0.0.0",
     "request": "^2.65.0",
@@ -14,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.paypal.com:gnramesh/slack-sample-cli.git"
+    "url": "git@github.com:mstraughan86/Emeralda-AI.git"
   },
   "engines": {
     "node": "0.12.x"
@@ -23,6 +28,6 @@
     "slack",
     "terminal"
   ],
-  "author": "Gaurav Ramesh",
+  "author": "Michael Straughan",
   "license": "MIT"
 }
