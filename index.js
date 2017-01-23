@@ -20,8 +20,6 @@ slackTerminal.init(token, {
 	COMMAND_DIR: __dirname + '/commands'
 });
 
-
-
 ///////////////// Self Updater /////////////////
 var AutoUpdater = require('auto-updater');
 
@@ -94,22 +92,22 @@ http.createServer(function (req, res) {
     res.statusCode = 404
     res.end('no such location')
   })
-}).listen(4567)
+}).listen(4567);
 
 handler.on('error', function (err) {
   console.error('Error:', err.message)
-})
+});
 
 handler.on('push', function (event) {
-	postRequest('IIIII X - Received a push event for ' + 
+	postRequest('IIIII ....X - Received a push event for ' + 
     event.payload.repository.name + 
 	' to ' + 
     event.payload.ref);
   console.log('Received a push event for %s to %s',
     event.payload.repository.name,
-    event.payload.ref)
+    event.payload.ref);
 	autoupdater.fire('check');
-})
+});
 
 // and Finally
   console.log("Test Commit IV");
