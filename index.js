@@ -24,7 +24,7 @@ slackTerminal.init(token, {
 var AutoUpdater = require('auto-updater');
 
 var autoupdater = new AutoUpdater({
- pathToJson: './package.json',
+ pathToJson: '',
  autoupdate: true,
  checkgit: false,
  jsonhost: 'raw.githubusercontent.com/mstraughan86/Emeralda-AI/master/package.json',
@@ -99,7 +99,10 @@ handler.on('error', function (err) {
 });
 
 handler.on('push', function (event) {
-	postRequest('IIIII ....X - Received a push event for ');
+	postRequest('IIIII ....X - Received a push event for ' + 
+    event.payload.repository.name + 
+	' to ' + 
+    event.payload.ref);
   console.log('Received a push event for %s to %s',
     event.payload.repository.name,
     event.payload.ref);
