@@ -26,7 +26,7 @@ slackTerminal.init(token, {
 var AutoUpdater = require('auto-updater');
 
 var autoupdater = new AutoUpdater({
- pathToJson: '',
+ pathToJson: './package.json',
  autoupdate: true,
  checkgit: false,
  jsonhost: 'raw.githubusercontent.com/mstraughan86/Emeralda-AI/master/package.json',
