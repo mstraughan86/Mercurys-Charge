@@ -30,7 +30,7 @@ var autoupdater = new AutoUpdater({
  autoupdate: true,
  checkgit: false,
  jsonhost: 'raw.githubusercontent.com/mstraughan86/Emeralda-AI/master/package.json',
- contenthost: 'https://api.github.com/repos/mstraughan86/Emeralda-AI/zipball/master',
+ contenthost: 'api.github.com/repos/mstraughan86/Emeralda-AI/zipball/master',
  progressDebounce: 0,
  devmode: true
 });
