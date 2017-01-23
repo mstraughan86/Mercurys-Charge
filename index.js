@@ -101,7 +101,7 @@ handler.on('error', function (err) {
 })
 
 handler.on('push', function (event) {
-	postRequest('IIIII - Received a push event for ' + 
+	postRequest('IIIII X - Received a push event for ' + 
     event.payload.repository.name + 
 	' to ' + 
     event.payload.ref);
@@ -111,5 +111,7 @@ handler.on('push', function (event) {
 	autoupdater.fire('check');
 })
 
+// and Finally
+  console.log("Test Commit III");
 
 
