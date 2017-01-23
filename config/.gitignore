@@ -1,0 +1,4 @@
+# Configuration File that contains sensitive data
+cfg.txt
+secret.txt
+path.txt

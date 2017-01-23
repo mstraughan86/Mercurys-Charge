@@ -1,0 +1,26 @@
+{
+	"help": {
+		"alias": [ "halp" ],
+		"endpoint": "#",
+		"help": "help [command](optional)",
+		"description": "To get help on all supported commands, or a specified command"
+	},
+
+	"gem": {
+		"alias": [],
+		"endpoint": "https://rubygems.org/api/v1/gems/{gem}.json",
+		"help": "gem [gem-name]",
+		"description": "Fetches details of the specified Ruby gem"
+	},
+
+	"error": {
+		"exclude": true
+	},
+	
+	"test": {
+		"alias": [ "teest" , "teeest" , "toast" ],
+		"endpoint": "#",
+		"help": "gem [gem-name]",
+		"description": "My first Slackbot"
+	}
+}

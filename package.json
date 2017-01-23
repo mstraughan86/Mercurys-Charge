@@ -1,0 +1,28 @@
+{
+  "name": "slack-sample-cli",
+  "version": "1.0.0",
+  "description": "Sample app to show working with slack-terminalize module",
+  "main": "index.js",
+  "dependencies": {
+    "github-webhook-handler": "^0.6.0",
+    "http": "0.0.0",
+    "request": "^2.65.0",
+    "slack-terminalize": "^1.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.paypal.com:gnramesh/slack-sample-cli.git"
+  },
+  "engines": {
+    "node": "0.12.x"
+  },
+  "keywords": [
+    "slack",
+    "terminal"
+  ],
+  "author": "Gaurav Ramesh",
+  "license": "MIT"
+}
