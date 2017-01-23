@@ -24,7 +24,7 @@ slackTerminal.init(token, {
 var AutoUpdater = require('auto-updater');
 
 var autoupdater = new AutoUpdater({
- pathToJson: '',
+ pathToJson: './package.json',
  autoupdate: true,
  checkgit: false,
  jsonhost: 'raw.githubusercontent.com/mstraughan86/Emeralda-AI/master/package.json',
@@ -106,7 +106,7 @@ handler.on('push', function (event) {
   console.log('Received a push event for %s to %s',
     event.payload.repository.name,
     event.payload.ref);
-	autoupdater.fire('check');
+	//autoupdater.fire('check');
 });
 
 // and Finally
