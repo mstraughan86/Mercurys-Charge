@@ -28,11 +28,11 @@ var AutoUpdater = require('auto-updater');
 var autoupdater = new AutoUpdater({
  pathToJson: '',
  autoupdate: true,
- checkgit: false,
+ checkgit: true,
  jsonhost: 'https://raw.githubusercontent.com/mstraughan86/Emeralda-AI/master/package.json',
  contenthost: 'https://api.github.com/repos/mstraughan86/Emeralda-AI/zipball/master',
  progressDebounce: 0,
- devmode: false
+ devmode: true
 });
 
 // State the events
