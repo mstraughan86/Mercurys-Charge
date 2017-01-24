@@ -45,7 +45,8 @@
     });
     autoupdater.on('check.out-dated', function (v_old, v) {
         console.warn("Your version is outdated. " + v_old + " of " + v);
-        autoupdater.fire('download-update'); // If autoupdate: false, you'll have to do this manually.
+        // Commenting out this fire command. this is actually called twice if autoUpdate is true.
+        //autoupdater.fire('download-update'); // If autoupdate: false, you'll have to do this manually.
         // Maybe ask if the'd like to download the update.
     });
     autoupdater.on('update.downloaded', function () {
