@@ -80,7 +80,7 @@
     });
 
 // Start checking
-//   autoupdater.fire('check');
+   autoupdater.fire('check');
 //autoupdater.fire('download-update');
 //autoupdater.fire('extract');
 }
@@ -122,5 +122,5 @@
 
 ///////////////// ~~~ Finally
 {
-    console.log("Test Commit 9999999");
+    console.log("Test Commit 0.1.4");
 }
