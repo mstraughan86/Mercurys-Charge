@@ -1,4 +1,4 @@
 # Configuration File that contains sensitive data
-cfg.txt
+token.txt
 secret.txt
 path.txt
