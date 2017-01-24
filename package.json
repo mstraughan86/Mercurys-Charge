@@ -1,8 +1,8 @@
 {
   "name": "Emeralda-AI",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "auto-updater": {
-    "repo": "/mstraughan86/Emeralda-AI",
+    "repo": "mstraughan86/Emeralda-AI",
     "branch": "master"
   },
   "description": "",
