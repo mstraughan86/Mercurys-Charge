@@ -101,7 +101,7 @@ http.createServer(function (req, res) {
 }).listen(4567);
 
 handler.on('error', function (err) {
-  console.error('Error:', err.message)
+  console.error('Error:', err.message);
 });
 
 handler.on('push', function (event) {
@@ -114,7 +114,7 @@ handler.on('push', function (event) {
   console.log('Received a push event for %s to %s',
     event.payload.repository.name,
     event.payload.ref);
-//autoupdater.fire('check');
+autoupdater.fire('check');
         
         
 });
