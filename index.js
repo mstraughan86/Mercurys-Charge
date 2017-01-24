@@ -26,11 +26,11 @@ var AutoUpdater = require('auto-updater');
 var autoupdater = new AutoUpdater({
  pathToJson: './package.json',
  autoupdate: true,
- checkgit: false,
+ checkgit: true,
  jsonhost: 'raw.githubusercontent.com/mstraughan86/Emeralda-AI/master/package.json',
  contenthost: 'api.github.com/repos/mstraughan86/Emeralda-AI/zipball/master',
  progressDebounce: 0,
- devmode: true
+ devmode: false
 });
 
 // State the events
@@ -77,7 +77,13 @@ autoupdater.on('error', function(name, e) {
 });
 
 // Start checking
-// autoupdater.fire('check');
+autoupdater.fire('check');
+//autoupdater.fire('download-update');
+//autoupdater.fire('extract');
+autoupdater.fire('check');
+autoupdater.fire('check');
+autoupdater.fire('check');
+autoupdater.fire('check');
 
 ///////////////// GitHiub Listener Server /////////////////
 
@@ -108,7 +114,7 @@ handler.on('push', function (event) {
   console.log('Received a push event for %s to %s',
     event.payload.repository.name,
     event.payload.ref);
-autoupdater.fire('check');
+//autoupdater.fire('check');
         
         
 });
