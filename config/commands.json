@@ -22,5 +22,21 @@
 		"endpoint": "#",
 		"help": "gem [gem-name]",
 		"description": "My first Slackbot"
+	},
+	
+	"updater": {
+		"alias": [ "Updater" ],
+		"endpoint": "#",
+		"help": "updater [command] (check or update)",
+		"description": "Performs a manual check for updates pushed to GitHub."
+		"exclude": false
+	},
+	
+	"system": {
+		"alias": [ "System" ],
+		"endpoint": "#",
+		"help": "system [command] [parameters]",
+		"description": "System commands that control Emeralda."
+		"exclude": false
 	}
 }
