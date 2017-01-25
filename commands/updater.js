@@ -14,6 +14,4 @@ module.exports = function (param) {
     // send back the response
     // more on this method here: https://api.slack.com/methods/chat.postMessage
     util.postMessage(param.channel, 'INCOMING MESSAGE FROM THE BIG GIANT HEAD!');
-    //dummy command
-    // kill process
 };

@@ -4,6 +4,8 @@
     var token = fs.readFileSync("./config/token.txt").toString('utf-8');
     var path = fs.readFileSync("./config/path.txt").toString('utf-8');
     var secret = fs.readFileSync("./config/secret.txt").toString('utf-8');
+    
+    var port = 4567;
 }
 
 ///////////////// ~~~ Slack Bot Server
@@ -95,10 +97,13 @@
 
     http.createServer(function (req, res) {
         handler(req, res, function (err) {
-            res.statusCode = 404
-            res.end('no such location')
-        })
-    }).listen(4567);
+            res.statusCode = 404;
+            res.end('no such location');
+        });
+    }).listen(port);
+    
+    console.log("GitHub Push Listener");
+
 
     handler.on('error', function (err) {
         console.error('Error:', err.message);
