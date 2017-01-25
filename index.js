@@ -61,5 +61,5 @@
 
 ///////////////// ~~~ Finally
 {
-    console.log("Code Version 0.1.8, from a Node.js inside a Docker Instance hosted on Amazon AWS EC2 AMI Micro Instance");
+    util.postRequest("Code Version 0.2.0, from a Node.js inside a Docker Instance hosted on Amazon AWS EC2 AMI Micro Instance");
 }
