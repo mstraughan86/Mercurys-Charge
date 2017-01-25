@@ -1,14 +1,14 @@
 ///////////////// ~~~ Required Resources
-{
+
     var fs = require("fs");
     var token = fs.readFileSync("./config/token.txt").toString('utf-8');
     var path = fs.readFileSync("./config/path.txt").toString('utf-8');
     var secret = fs.readFileSync("./config/secret.txt").toString('utf-8');
     var port = 4567;
-}
+
 
 ///////////////// ~~~ Slack Bot Server
-{
+
     var slackTerminal = require('slack-terminalize');
 
     slackTerminal.init(token, {
@@ -21,10 +21,10 @@
         CONFIG_DIR: __dirname + '/config',
         COMMAND_DIR: __dirname + '/commands'
     });
-}
+
 
 ///////////////// ~~~ GitHiub Listener Server
-{
+
     var http = require('http');
     var createHandler = require('github-webhook-handler');
     var handler = createHandler({path: path, secret: secret});
@@ -45,7 +45,7 @@
 
     handler.on('push', function (event) {
 
-        util.postRequest('#general', 'Received a push event for ' +
+        util.postMessage('#general', 'Received a push event for ' +
                 event.payload.repository.name +
                 ' to ' +
                 event.payload.ref);
@@ -58,11 +58,10 @@
 
     });
 	
-	util.postRequest('#general', "Code Version 0.2.2, from a Node.js inside a Docker Instance hosted on Amazon AWS EC2 AMI Micro Instance");
+	util.postMessage('#general', "Code Version 0.2.2, from a Node.js inside a Docker Instance hosted on Amazon AWS EC2 AMI Micro Instance");
 	
-}
+
 
 ///////////////// ~~~ Finally
-{
+
     
-}
