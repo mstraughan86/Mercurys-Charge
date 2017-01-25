@@ -61,5 +61,5 @@
 
 ///////////////// ~~~ Finally
 {
-    console.log("Test Commit 0.1.8");
+    console.log("Code Version 0.1.8, from a Node.js inside a Docker Instance hosted on Amazon AWS EC2 AMI Micro Instance");
 }
