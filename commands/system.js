@@ -10,7 +10,7 @@ var AutoUpdater = require('auto-updater');
 
 var autoupdater = new AutoUpdater({
     pathToJson: '/',
-    autoupdate: true,
+    autoupdate: false,
     checkgit: false,
     jsonhost: 'raw.githubusercontent.com',
     contenthost: 'codeload.github.com',
@@ -62,12 +62,11 @@ var autoupdater = new AutoUpdater({
     });
     
 var version = function(){}
-var update = function(){}
-var check = function(){
-    
-    
-    autoupdater.fire('check');
+var update = function(){
     autoupdater.fire('download-update'); 
+}
+var check = function(){
+    autoupdater.fire('check');
 }
 var shutdown = function() {
     process.exit(0);

@@ -4,6 +4,7 @@
     var token = fs.readFileSync("./config/token.txt").toString('utf-8');
     var path = fs.readFileSync("./config/path.txt").toString('utf-8');
     var secret = fs.readFileSync("./config/secret.txt").toString('utf-8');
+    var port = 4567;
 }
 
 ///////////////// ~~~ Slack Bot Server
@@ -22,37 +23,21 @@
     });
 }
 
-///////////////// ~~~ Self Updater Listener
-{
-    var AutoUpdater = require('auto-updater');
-
-    var autoupdater = new AutoUpdater({
-        pathToJson: '/',
-        autoupdate: false,
-        checkgit: false,
-        jsonhost: 'raw.githubusercontent.com',
-        contenthost: 'codeload.github.com',
-        progressDebounce: 0,
-        devmode: false
-    });
-
-
-}
-
 ///////////////// ~~~ GitHiub Listener Server
 {
     var http = require('http');
     var createHandler = require('github-webhook-handler');
     var handler = createHandler({path: path, secret: secret});
 
-    var postRequest = require('./commands/postRequest.js');
+    var util = require('./util');
+    var updater = require('./commands/system.js')
 
     http.createServer(function (req, res) {
         handler(req, res, function (err) {
             res.statusCode = 404
             res.end('no such location')
         })
-    }).listen(4567);
+    }).listen(port);
 
     handler.on('error', function (err) {
         console.error('Error:', err.message);
@@ -60,21 +45,21 @@
 
     handler.on('push', function (event) {
 
-
-        postRequest('IIIII ....X - Received a push event for ' +
+        util.postRequest('#general', 'Received a push event for ' +
                 event.payload.repository.name +
                 ' to ' +
                 event.payload.ref);
         console.log('Received a push event for %s to %s',
                 event.payload.repository.name,
                 event.payload.ref);
-        autoupdater.fire('check');
-
+  
+        // this is where i can exectute the auto update code.... just call system.js directly
+        updater( { command:'update', channel:'#general' } );
 
     });
 }
 
 ///////////////// ~~~ Finally
 {
-    console.log("Test Commit 0.1.7");
+    console.log("Test Commit 0.1.8");
 }
