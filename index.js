@@ -122,5 +122,5 @@
 
 ///////////////// ~~~ Finally
 {
-    console.log("Test Commit 0.1.6");
+    console.log("Test Commit 0.1.6.");
 }
