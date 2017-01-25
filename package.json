@@ -1,6 +1,6 @@
 {
   "name": "Emeralda-AI",
-  "version": "0.1.5",
+  "version": "0.1.8",
   "auto-updater": {
     "repo": "mstraughan86/Emeralda-AI",
     "branch": "master"
@@ -9,6 +9,7 @@
   "main": "index.js",
   "dependencies": {
     "auto-updater": "^1.0.2",
+    "forever": "^0.15.3",
     "github-webhook-handler": "^0.6.0",
     "http": "0.0.0",
     "request": "^2.65.0",
