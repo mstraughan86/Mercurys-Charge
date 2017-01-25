@@ -1,17 +1,65 @@
-var util = require('../util');
+///////////////// ~~~ Required Resources
+{
+    var fs = require("fs");
+    var token = fs.readFileSync("./config/token.txt").toString('utf-8');
+    var path = fs.readFileSync("./config/path.txt").toString('utf-8');
+    var secret = fs.readFileSync("./config/secret.txt").toString('utf-8');
+    var port = 4567;
+}
 
-module.exports = function (param) {
-    // param object contains the following keys:
-    // 1. command - the primary command name
-    // 2. args - an array of strings, which is user's message posted in the channel, separated by space
-    // 3. user - Slack client user id
-    // 4. channel - Slack client channel id
-    // 5. commandConfig - the json object for this command from config/commands.json
+///////////////// ~~~ Slack Bot Server
+{
+    var slackTerminal = require('slack-terminalize');
 
-    // implement your logic here.. 
-    // .. 
+    slackTerminal.init(token, {
+        // slack rtm client options here
+        // more info at: https://github.com/slackhq/node-slack-client/blob/master/lib/clients/rtm/client.js
+    }, {
+        // app configurations to suit your project structure
+        // to see the list of all possible config,
+        // check this out: https://github.com/ggauravr/slack-terminalize/blob/master/util/config.js
+        CONFIG_DIR: __dirname + '/config',
+        COMMAND_DIR: __dirname + '/commands'
+    });
+}
 
-    // send back the response
-    // more on this method here: https://api.slack.com/methods/chat.postMessage
-    util.postMessage(param.channel, 'INCOMING MESSAGE FROM THE BIG GIANT HEAD!');
-};
+///////////////// ~~~ GitHiub Listener Server
+{
+    var http = require('http');
+    var createHandler = require('github-webhook-handler');
+    var handler = createHandler({path: path, secret: secret});
+
+    var util = require('./util');
+    var updater = require('./commands/system.js')
+
+    http.createServer(function (req, res) {
+        handler(req, res, function (err) {
+            res.statusCode = 404
+            res.end('no such location')
+        })
+    }).listen(port);
+
+    handler.on('error', function (err) {
+        console.error('Error:', err.message);
+    });
+
+    handler.on('push', function (event) {
+
+        util.postRequest('#general', 'Received a push event for ' +
+                event.payload.repository.name +
+                ' to ' +
+                event.payload.ref);
+        console.log('Received a push event for %s to %s',
+                event.payload.repository.name,
+                event.payload.ref);
+  
+        // this is where i can exectute the auto update code.... just call system.js directly
+        updater( { command:'update', channel:'#general' } );
+
+    });
+}
+
+///////////////// ~~~ Finally
+{
+    console.log("Test Commit 0.1.8");
+}
