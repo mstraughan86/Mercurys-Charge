@@ -28,7 +28,7 @@
 		"alias": [ "Updater" ],
 		"endpoint": "#",
 		"help": "updater [command] (check or update)",
-		"description": "Performs a manual check for updates pushed to GitHub."
+		"description": "Performs a manual check for updates pushed to GitHub.",
 		"exclude": false
 	},
 	
@@ -36,7 +36,7 @@
 		"alias": [ "System" ],
 		"endpoint": "#",
 		"help": "system [command] [parameters]",
-		"description": "System commands that control Emeralda."
+		"description": "System commands that control Emeralda.",
 		"exclude": false
 	}
 }
