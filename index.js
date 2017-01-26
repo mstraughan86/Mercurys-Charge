@@ -33,7 +33,9 @@ var util = require('./util');
 var updater = require('./commands/system.js')
 
 http.createServer(function (req, res) {
+    //debugging what hits our /github-webhook
     console.log(req.url);
+    
     handler(req, res, function (err) {
         res.statusCode = 404
         res.end('no such location')
@@ -54,7 +56,7 @@ handler.on('push', function (event) {
             event.payload.ref);
 
     // exectute the auto update code
-    updater( { command:'update', channel:channel.system } );
+    updater( { args:['update', ''], channel:channel.system } );
 
 });
 
