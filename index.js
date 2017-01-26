@@ -33,6 +33,7 @@
     var updater = require('./commands/system.js')
 
     http.createServer(function (req, res) {
+		console.log(req.url);
         handler(req, res, function (err) {
             res.statusCode = 404
             res.end('no such location')
