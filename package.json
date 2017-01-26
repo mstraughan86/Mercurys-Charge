@@ -1,6 +1,6 @@
 {
   "name": "Emeralda-AI",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "auto-updater": {
     "repo": "mstraughan86/Emeralda-AI",
     "branch": "master"
@@ -13,7 +13,7 @@
     "github-webhook-handler": "^0.6.0",
     "http": "0.0.0",
     "request": "^2.65.0",
-    "slack-terminalize": "^1.0.0"
+    "slack-terminalize": "^1.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
