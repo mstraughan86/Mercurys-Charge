@@ -58,7 +58,7 @@
 
     });
 	
-	util.postMessage('#general', "Code Version 0.2.3, from a Node.js inside a Docker Instance hosted on Amazon AWS EC2 AMI Micro Server");
+	util.postMessage('#general', "Code Version 0.2.4, from a Node.js inside a Docker Container Instance hosted on Amazon AWS EC2 AMI Micro Virtual Server Instance");
 	
 
 
