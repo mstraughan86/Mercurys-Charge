@@ -45,6 +45,9 @@ var _getCommand = function(userCommand) {
 	if (!userCommand) {
 		return util.config.get('ERROR_COMMAND');
 	}
+  // this is to escape characters in the user command that have sepcial meaning in regex
+  // so if the command is `help?` then it replaces it with `help\?`, so when used in further matching
+ // takes the `?` literally and not as `any single character`	
   userCommand = userCommand.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 	var pattern = new RegExp('\\[(([^\\[]*[,])?' + userCommand + '[^\\]]*)\\]', 'i'),
 		matches = cmdPattern.match(pattern) && cmdPattern.match(pattern)[0];
