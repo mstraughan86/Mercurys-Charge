@@ -41,6 +41,14 @@ cron list                   :    List all currently running cron jobs and saved 
 cron help                   :    Displays this help text.
 ```
 
+## Development
+Because this is developed as a subtree in another project repository, I need to push and pull with these git commands:
+```
+git subtree push --prefix=lib/Mercurys-Sundial Mercurys-Sundial master
+git push Mercurys-Sundial $(git subtree split --prefix=lib/Mercurys-Sundial --onto=Mercurys-Sundial/master):master
+git subtree pull --prefix=lib/Mercurys-Sundial Mercurys-Sundial master
+```
+
 ## Micro Knowledge Base
 #### Links
 - Implementation in Progress: [Mercury's Charge](https://github.com/mstraughan86/Mercurys-Charge)
