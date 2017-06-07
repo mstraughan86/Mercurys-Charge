@@ -1,6 +1,26 @@
-const util = require('../../util.js');
+const path 	= require('path');
+require('dotenv').config({path: path.resolve(__dirname, '.env')});
 const CronJob = require('cron').CronJob;
+const mercuryCommand = require('../../index.js');
+const util = require('../../util.js');
+const mongoose = require('../../utilities/mongoose.js');
+const COLLECTION = process.env.CRON_DB_COLLECTION;
+const CronJobRecord = mongoose.createModel('CronJob', {
+  active: Boolean,
+  input: String,
+  channel: String,
+  name: String,
+  command: String,
+  cronPattern: String,
+  second: String,
+  minute: String,
+  hour: String,
+  monthdate: String,
+  month: String,
+  weekday: String,
+});
 
+let activeCronJobs = [];
 const errorParseCommand = (args) => {
   let results = {errors: []};
 
