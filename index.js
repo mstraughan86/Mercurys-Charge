@@ -21,6 +21,7 @@ const CronJobRecord = mongoose.createModel('CronJob', {
 });
 
 let activeCronJobs = [];
+
 const errorParseCommand = (args) => {
   let results = {errors: []};
 
@@ -36,8 +37,6 @@ const errorParseCommand = (args) => {
   Object.keys(commands).forEach((command) => {
     commandsList.push.apply(commandsList, commands[command].alias);
   });
-
-  // ~~~~
 
   const checkCronPatternRange = (patternArray) => {
     const rangeMap = {
