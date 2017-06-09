@@ -30,7 +30,7 @@ const errorParseCommand = (args) => {
   // This is what creates the Command List.
   // This is pretty dependent on Mercury's Charge...
   // TODO: Abstract this out! Refactor candidate.
-
+  
   const commands = require('../../config/commands.json');
   const commandsList = [];
   commandsList.push.apply(commandsList, Object.keys(commands));
@@ -96,9 +96,8 @@ const errorParseCommand = (args) => {
     checkCronPattern(args.slice(2, 8).join(' '));
     checkCronPatternRange(args.slice(2, 8));
   }
-  else if (['stop', 'load'].includes(command)) {
+  else if (['stop', 'load', 'delete'].includes(command)) {
     checkCommandLength(2);
-    checkJobCommand(args[1]);
   }
   else if (['list', 'help'].includes(command)) {
   }
