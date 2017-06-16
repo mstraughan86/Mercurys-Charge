@@ -279,7 +279,36 @@ const stopCronJob = (args) => {
   else resolve('No job found with the name: ' + name);
 })
 };
+const runCronJob = (args, channel) => {
+  const input = args.slice(1).join(' ');
+  const cronPattern = args.slice(2, 8).join(' ');
+  const name = args[1];
+  const command = args.slice(8, args.length).join(' ');
+  const thisCronJob = activeCronJobs.find(obj => obj.name == name);
+  if (thisCronJob) return Promise.resolve('Run failed! Job already running found. Please check the name used: ' + name);
 
+  return new Promise((resolve, reject)=>{
+    CronJobRecord.count({name:name})
+      .then(result=>{
+        console.log('Job Pattern', cronPattern);
+        if (result > 0) return resolve('Run failed! That name is already in use. Please use a name other than: ' + name);
+        const thisJob = {
+          name: name,
+          input: input,
+          channel: channel,
+          job: new CronJob({
+            cronTime: cronPattern,
+            onTick: mercuryCommand.command.bind(null,{text:command, channel:channel}),
+            start: true,
+            timeZone: 'America/Los_Angeles'
+          })
+        };
+        activeCronJobs.push(thisJob);
+        return resolve('Started job: ' + name);
+      });
+  });
+
+};
 
 // module.exports = function (param) {
 //   let sitemapRegeneration = new CronJob({
