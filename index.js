@@ -309,6 +309,48 @@ const runCronJob = (args, channel) => {
   });
 
 };
+const loadCronJob = (args, channel) => {
+  const name = args[1];
+
+  return new Promise((resolve, reject)=>{
+    const thisCronJob = activeCronJobs.find(obj => obj.name == name);
+    if (thisCronJob) return resolve('Load failed! Job already running found. Please check the name used: ' + name);
+    // i can clean up these if elses to just ifs!
+    else { // no job is currently running! we can continue to load!
+      CronJobRecord.count({name:name})
+        .then(result => {
+          // can i reduce the if else to just an if? can i do
+          // reduce == 0 resolve fail
+          if(result > 0) { // the job you are trying to load exists!
+
+            CronJobRecord.findOne({name:name})
+              .then(result=>{
+                console.log('Load Pattern', result.cronPattern);
+                console.log(result.cronPattern);
+                console.log(result);
+                const thisJob = {
+                  name: result.name,
+                  input: result.input,
+                  channel: channel,
+                  job: new CronJob({
+                    cronTime: result.cronPattern,
+                    onTick: mercuryCommand.command.bind(null,{text:result.command, channel:channel}),
+                    start: true,
+                    timeZone: 'America/Los_Angeles'
+                  })
+                };
+                activeCronJobs.push(thisJob);
+                result.active = true;
+                result.channel = channel;
+                result.save(()=>resolve('Cron Job loaded successfully! Currently running as: ' + result.name));
+              });
+          }
+          else resolve('Load failed! Job not found. Please check the name used: ' + name);
+        });
+    }
+  });
+};
+
 
 // module.exports = function (param) {
 //   let sitemapRegeneration = new CronJob({
