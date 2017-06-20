@@ -27,10 +27,6 @@ const errorParseCommand = (args) => {
 
   const regexCron = /^[0-9,\*\-\/]+$/;
 
-  // This is what creates the Command List.
-  // This is pretty dependent on Mercury's Charge...
-  // TODO: Abstract this out! Refactor candidate.
-  
   const commands = require('../../config/commands.json');
   const commandsList = [];
   commandsList.push.apply(commandsList, Object.keys(commands));
@@ -134,7 +130,14 @@ const helpMessage = () => {
     "You must specify every job with a name. This is because every job fires indefinitely until stopped, and is only " +
     "referenced by its designated name. No spaces are allowed in your name and quotes don't help. \n\n" +
     "You can fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * cron help' " +
-    "would fire thisc help command everyday at midnight, if that is your thing.\n\n";
+    "would fire this help command everyday at midnight, if that is your thing.\n\n" +
+    "You can fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * cron help' " +
+    "would fire this help command everyday at midnight, if that is your thing.\n\n" +
+    "If a name is used to save a cron job, you cannot reuse it, you can only load or delete a job with that name." +
+    "To use jobs in specific channels, basically, the job will run from the channel you run or load it from." +
+    "Cron jobs will automatically restart on application load! But only if the job was running at the time of exit," +
+    "and if the job was saved. Running jobs that were not saved will not restart on load.\n\n";
+
   const commandsDescription = [
     "cron job name * * * * * * command args...  :    Run cron job at designated time. Saves it by name.",
     "cron test name * * * * * * command args... :    Test cron job pattern and command right now.",
@@ -254,30 +257,27 @@ const listCronJobsAndRecords = () => {
 };
 const stopCronJob = (args) => {
   const name = args[1];
-  return new Promise((resolve, reject)=>{
-  const thisCronJob = activeCronJobs.find(obj => obj.name == name);
-  if (thisCronJob) {
-    thisCronJob.job.stop();
-    activeCronJobs = activeCronJobs.filter(obj => obj.name !== name);
-    // see if this name exists in the DB.
-    // if it does, make sure that it has active:false
-
-      CronJobRecord.count({name:name})
+  return new Promise((resolve, reject) => {
+    const thisCronJob = activeCronJobs.find(obj => obj.name == name);
+    if (thisCronJob) {
+      thisCronJob.job.stop();
+      activeCronJobs = activeCronJobs.filter(obj => obj.name !== name);
+      CronJobRecord.count({name: name})
         .then(result => {
-          if(result > 0) { // the job you are trying to load exists!
-            CronJobRecord.findOne({name:name})
-              .then(result=>{
+          if (result > 0) { // the job you are trying to load exists!
+            CronJobRecord.findOne({name: name})
+              .then(result => {
 
                 result.active = false;
                 result.channel = '';
-                result.save(()=>resolve('Stopped job and database updated: ' + name));
+                result.save(() => resolve('Stopped job and database updated: ' + name));
               });
           }
           else resolve('Stopped job: ' + name);
         });
     }
-  else resolve('No job found with the name: ' + name);
-})
+    else resolve('No job found with the name: ' + name);
+  })
 };
 const runCronJob = (args, channel) => {
   const input = args.slice(1).join(' ');
@@ -290,7 +290,7 @@ const runCronJob = (args, channel) => {
   return new Promise((resolve, reject)=>{
     CronJobRecord.count({name:name})
       .then(result=>{
-        console.log('Job Pattern', cronPattern);
+        console.log('Cron: Run Pattern', cronPattern);
         if (result > 0) return resolve('Run failed! That name is already in use. Please use a name other than: ' + name);
         const thisJob = {
           name: name,
@@ -313,21 +313,14 @@ const loadCronJob = (args, channel) => {
   const name = args[1];
 
   return new Promise((resolve, reject)=>{
-    const thisCronJob = activeCronJobs.find(obj => obj.name == name);
-    if (thisCronJob) return resolve('Load failed! Job already running found. Please check the name used: ' + name);
-    // i can clean up these if elses to just ifs!
-    else { // no job is currently running! we can continue to load!
+    const isJobAlreadyRunning = activeCronJobs.find(obj => obj.name == name);
+    if (!isJobAlreadyRunning) {
       CronJobRecord.count({name:name})
         .then(result => {
-          // can i reduce the if else to just an if? can i do
-          // reduce == 0 resolve fail
-          if(result > 0) { // the job you are trying to load exists!
-
+          if(result > 0) {
             CronJobRecord.findOne({name:name})
               .then(result=>{
-                console.log('Load Pattern', result.cronPattern);
-                console.log(result.cronPattern);
-                console.log(result);
+                console.log('Cron: Load Pattern', result.cronPattern);
                 const thisJob = {
                   name: result.name,
                   input: result.input,
@@ -345,11 +338,14 @@ const loadCronJob = (args, channel) => {
                 result.save(()=>resolve('Cron Job loaded successfully! Currently running as: ' + result.name));
               });
           }
-          else resolve('Load failed! Job not found. Please check the name used: ' + name);
+          else return resolve('Load failed! Job not found. Please check the name used: ' + name);
         });
     }
+    else return resolve('Load failed! Job already running found. Please check the name used: ' + name);
+
   });
 };
+
 const init = () => {
   console.log('Cron: Initialization function executed.');
   return new Promise((resolve, reject)=>{
@@ -381,16 +377,6 @@ const init = () => {
   });
 };
 
-// module.exports = function (param) {
-//   let sitemapRegeneration = new CronJob({
-//     cronTime: '*/5 * * * * *',       // Runs everyday at 04:30
-//     onTick: util.postMessage.bind(null, param.channel, 'Cron.'),             // Execute updateEvents() at cronTime
-//     //runOnInit: true,                // Fire immediately
-//     start: true,                      // Start script (to fire at cronTime)
-//     timeZone: 'America/Los_Angeles'   // ...?
-//   });
-// };
-
 const main = (param) => {
   // param object contains the following keys:
   // 1. command - the primary command name
@@ -399,49 +385,52 @@ const main = (param) => {
   // 4. channel - Slack client channel id
   // 5. commandConfig - the json object for this command from config/commands.json
 
-  const user = param.user;
+  // module.exports = function (param) {
+  //   let cronJobExample = new CronJob({
+  //     cronTime: '*/5 * * * * *',        // Runs everyday at 04:30
+  //     onTick: util.postMessage.bind(null, param.channel, 'Cron.'),
+  //     runOnInit: false,                 // Fire immediately
+  //     start: true,                      // Start script (to fire at cronTime)
+  //     timeZone: 'America/Los_Angeles'   // ...?
+  //   });
+  // };
+
+  // const CronJobRecordExample = {
+  //   _id: 59f6a0126007c32190e77fc5,
+  //   active: false,
+  //   input: '10seconds */10 * * * * * test',
+  //   channel: '',
+  //   cronPattern: '*/10 * * * * *',
+  //   second: '*/10',
+  //   minute: '*',
+  //   hour: '*',
+  //   monthdate: '*',
+  //   month: '*',
+  //   weekday: '*',
+  //   name: '10seconds',
+  //   command: 'test',
+  //   __v: 0
+  // };
+
   const channel = param.channel;
 
   errorParseCommand(param.args)
-    .then((args) => {
+    .then(args => {
       const command = param.args[0];
       switch (command) {
-        case 'help': return helpMessage().then(msg => util.postMessage(channel, msg));
-        case 'test': return testCronPattern(args).then(msg => util.postMessage(channel, msg)); // doesn't run the command.
-        case 'list': return listCronJobsAndRecords().then(msg => util.postMessage(channel, msg));
-        case 'stop': return stopCronJob(args).then(msg => util.postMessage(channel, msg));
-        case 'save': return saveCronJob(args).then(msg => util.postMessage(channel, msg));
-        case 'load': return loadCronJob(args, channel).then(msg => util.postMessage(channel, msg));
-        case 'job': return runCronJob(args, channel).then(msg => util.postMessage(channel, msg));
-
-        // I need to finish:
-
-          // Save separate git commits and push
-          // ... I think we are done! wow.
-
-          // Clean up init
-          // clean up a lot of code actually
-          // Make an example of how one of the database collection items looks like in full, so I don't have to output it again for reference?
-
-          // Explaination of the edge cases about saving and loading using the name
-          // and how the channels work, basically, the script will run from the channel you job or load it from.
-          // and the recuring save, active thing.
-
-
-          // I should save the user who initiated the command huh. And time.... etc. Why not right?
-          // If I am doing that, do I need to make a history of when this successfully fired, etc etc?
-          // I have a database after all... Why not?
-          // ... this is expanding the scope greatly of what this can do(data it records), but I don't think its all that difficult!
-          // Worth in my eyes!
-
-        case 'delete': return deleteCronJobRecord(args).then((msg)=>util.postMessage(channel, msg));
-        default:
-          return util.postMessage(channel, "Expecting something else, type 'cron help'");
-        // }
+        case 'help':    return helpMessage();
+        case 'test':    return testCronPattern(args);
+        case 'list':    return listCronJobsAndRecords();
+        case 'stop':    return stopCronJob(args);
+        case 'save':    return saveCronJob(args);
+        case 'load':    return loadCronJob(args, channel);
+        case 'job':     return runCronJob(args, channel);
+        case 'delete':  return deleteCronJobRecord(args);
+        default:        return "Expecting something else, type 'cron help'";
       }
     })
-    .then()
-    .catch((error) => {util.postMessage(channel, error.error)});
+    .then(msg => util.postMessage(channel, msg))
+    .catch(error => {util.postMessage(channel, error.error)});
 };
 
 module.exports = {
