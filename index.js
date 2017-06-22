@@ -131,8 +131,6 @@ const helpMessage = () => {
     "referenced by its designated name. No spaces are allowed in your name and quotes don't help. \n\n" +
     "You can fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * cron help' " +
     "would fire this help command everyday at midnight, if that is your thing.\n\n" +
-    "You can fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * cron help' " +
-    "would fire this help command everyday at midnight, if that is your thing.\n\n" +
     "If a name is used to save a cron job, you cannot reuse it, you can only load or delete a job with that name." +
     "To use jobs in specific channels, basically, the job will run from the channel you run or load it from." +
     "Cron jobs will automatically restart on application load! But only if the job was running at the time of exit," +
