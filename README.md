@@ -1,11 +1,10 @@
 # Mercury's Sundial
-## Introduction
 #### "We divide day by 2 and 12 and thrust order upon nature."
 
 ## Description
-This is Cron for Slack, a time-based job scheduler that will execute slack commands for you!
+This is Cron for Slack, a time-based job scheduler that will execute slack commands for you! This is built to be a module addon for the [Mercury](https://github.com/mstraughan86/Mercury) based chatbot [Mercury's Charge](https://github.com/mstraughan86/Mercurys-Charge).
 
-## Installation
+## Development Installation
 ```
 git remote add -f Mercury git@github.com:mstraughan86/Mercury.git
 git merge -s ours --no-commit --allow-unrelated-histories Mercury/master
@@ -28,8 +27,12 @@ You also have Asterisks (*), Ranges (1-3,5), and Steps (*/2) available to use. F
 means it runs every weekday (Monday through Friday) at 11:30:00 AM. It does not run on Saturday or Sunday.
 You must specify every job with a name. This is because every job fires indefinitely until stopped, and is only
 referenced by its designated name. No spaces are allowed in your name and quotes don't help.
-You can only fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * help'
-would fire the help command everyday at midnight, if that is your thing.
+You can only fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * cron help'
+would fire this help command everyday at midnight, if that is your thing.
+If a name is used to save a cron job, you cannot reuse it, you can only load or delete a job with that name.
+To use jobs in specific channels, basically, the job will run from the channel you run or load it from.
+Cron jobs will automatically restart on application load! But only if the job was running at the time of exit,
+and if the job was saved. Running jobs that were not saved will not restart on load.
 
 cron job name * * * * * * command args...  :    Run cron job at designated time. Saves it by name.
 cron test name * * * * * * command args... :    Test cron job pattern and command right now.
