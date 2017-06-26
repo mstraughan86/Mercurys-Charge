@@ -115,39 +115,61 @@ const errorParseCommand = (args) => {
   }
 };
 const helpMessage = () => {
-  const intro = "Cron Help\n\n";
-  const description = "This is Cron for Slack, a time-based job scheduler that will execute slack commands for you! " +
-    "You can schedule a job using a modified crontab format: second minute hour monthdate month weekday. The ranges " +
-    "for each value are: \n" +
-    "     second: 0-59\n" +
-    "     minute: 0-59\n" +
-    "       hour: 0-23\n" +
-    "  monthdate: 1-31\n" +
-    "      month: 0-11\n" +
-    "    weekday: 0-6\n" +
-    "You also have Asterisks (*), Ranges (1-3,5), and Steps (*/2) available to use. For example, '00 30 11 * * 1-5' " +
-    "means it runs every weekday (Monday through Friday) at 11:30:00 AM. It does not run on Saturday or Sunday. \n\n" +
-    "You must specify every job with a name. This is because every job fires indefinitely until stopped, and is only " +
-    "referenced by its designated name. No spaces are allowed in your name and quotes don't help. \n\n" +
-    "You can fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * cron help' " +
-    "would fire this help command everyday at midnight, if that is your thing.\n\n" +
-    "If a name is used to save a cron job, you cannot reuse it, you can only load or delete a job with that name." +
-    "To use jobs in specific channels, basically, the job will run from the channel you run or load it from." +
-    "Cron jobs will automatically restart on application load! But only if the job was running at the time of exit," +
-    "and if the job was saved. Running jobs that were not saved will not restart on load.\n\n";
+  const message = `
+Cron Help
 
-  const commandsDescription = [
-    "cron job name * * * * * * command args...  :    Run cron job at designated time. Saves it by name.",
-    "cron test name * * * * * * command args... :    Test cron job pattern and command right now.",
-    "cron save name * * * * * * command args... :    Save cron job. Does not run job.",
-    "cron load name              :    Start cron job by name.",
-    "cron delete name            :    Delete cron job by name.",
-    "cron stop name              :    Stop cron job by name.",
-    "cron list                   :    List all currently running cron jobs and saved cron jobs.",
-    "cron help                   :    Displays this help text.",
-  ].join('\n');
+This is Cron for Slack, a time-based job scheduler that will execute
+slack commands for you! You can schedule a job using a modified crontab
+format shown here:
 
-  return Promise.resolve(intro + description + commandsDescription);
+              Modified Crontab Format:
+
+      +----------------------------> At 00 seconds, every minute.
+      |  +-------------------------> Every 30th minute.
+      |  |    +--------------------> On the 11th hour.
+      |  |    |  +-----------------> Every day of the month.
+      |  |    |  | +---------------> Every month of the year.
+      +  +    +  + + +-------------> Mon thru Thu and Sat.
+
+      00 */30 11 * * 1-4,6		+----> Anatomy of a crontab.
+
+      +  +    +  + + +-------------> Day of Week: 0-6.
+      |  |    |  | +---------------> Months: 0-11.
+      |  |    |  +-----------------> Day of Month: 1-31.
+      |  |    +--------------------> Hours: 0-23.
+      |  +-------------------------> Minutes: 0-59.
+      +----------------------------> Seconds: 0-59.
+
+cron job name * * * * * * command args  : Run cron job at designated time. Saves it by name.
+cron test name * * * * * * command args : Test cron job pattern and command right now.
+cron save name * * * * * * command args : Save cron job. Does not run job.
+cron load name                          : Start cron job by name.
+cron delete name                        : Delete cron job by name.
+cron stop name                          : Stop cron job by name.
+cron list                               : List all currently running and saved cron jobs.
+cron help                               : Displays this help text.
+
+You must specify every job with a name. This is because
+every job fires indefinitely until stopped, and is only referenced by its
+designated name. No spaces are allowed in your name and quotes don't help.
+
+You can fire any command available by this slack bot. For example,
+'cron job help-everyday 00 00 00 * * * cron help' would fire this
+help command everyday at midnight, if that is your thing.
+
+If a name is used to save a cron job, you cannot reuse it, you can
+only load or delete a job with that name.
+
+To use jobs in specific channels, basically, the job will run from the
+channel you run or load it from.
+
+Cron jobs will automatically restart on application load! But only if the job
+was running at the time of exit,and if the job was saved.
+
+Running jobs that were not saved will not restart on load.
+`;
+
+  return Promise.resolve(message);
 };
 const testCronPattern = (args) => {
   const input = args.join(' ');
