@@ -1,6 +1,6 @@
-# slack-sample-cli
+# Mercury's Charge
 
-Sample app to work with [slack-terminalize](https://www.npmjs.com/package/slack-terminalize "slack terminalize at npm") with some basic custom commands
+I give unto thee, the responsibility to fulfill every task I request if you, and make the pact that I will not request anything outside of your power.
 
 # Setup
 
