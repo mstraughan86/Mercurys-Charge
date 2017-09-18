@@ -1,7 +1,7 @@
 {
-  "name": "slack-terminalize",
-  "version": "1.0.1",
-  "description": "Module to help build a custom command-line vocabulary for your bot",
+  "name": "Mercury",
+  "version": "0.0.1",
+  "description": "Mercury, the herald diviner-god. Ask and things happen.",
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha test/* --reporter spec",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.paypal.com:gnramesh/slack-terminalize.git"
+    "url": "git+https://github.com/mstraughan86/Mercury.git"
   },
   "keywords": [
     "slack",
@@ -17,11 +17,8 @@
     "cli",
     "hubot"
   ],
-  "author": {
-    "name": "Gaurav Ramesh",
-    "email": "gggauravr@gmail.com"
-  },
-  "license": "MIT",
+  "author": "Michael Straughan",
+  "license": "ISC",
   "dependencies": {
     "@slack/client": "^2.3.0",
     "winston": "^2.2.0"

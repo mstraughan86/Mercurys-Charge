@@ -1,47 +1,12 @@
-# Slack Terminalize
+# Mercury
 
-[![Build Status](https://travis-ci.org/ggauravr/slack-terminalize.svg?branch=develop)](https://travis-ci.org/ggauravr/slack-terminalize) [![Coverage Status](https://coveralls.io/repos/ggauravr/slack-terminalize/badge.svg?branch=develop&service=github)](https://coveralls.io/github/ggauravr/slack-terminalize?branch=develop)
+"Mercury, the herald diviner-god. Ask and things happen."
 
----
-Helps build a command-line system in Slack, to create a custom vocabulary for your bot.
+Built as a fork from Slack Terminalize, this is a chatbot that can simply be thought of as a script runner. I want to expand out Mercury with additional ease-of-life functionality for chatroom management.
 
----
-## Motivation
+Description from the original project:
 
-This module was built to abstract away some of the basic tasks of massaging a message posted on Slack channel, before giving it to the bot.
-That said, this is an opinionated implementation, because as it is, it limits to building a linux shell-like environment, where the first word
-of the message is taken as the command and the words that follow, the arguments. You can find a sample app built to use this module from the links below.
-
----
-## Usage
-
-```javascript
-
-var slackTerminal = require('slack-terminalize');
-
-slackTerminal.init('<your-slack-token-here>', 
-    {}, // slack-client options: https://github.com/slackhq/node-slack-client/blob/master/lib/clients/rtm/client.js
-    {} // configurations for the app: https://github.com/ggauravr/slack-terminalize/blob/master/util/config.js
-});
-
-```
-
-Checkout [this](https://github.com/ggauravr/slack-sample-cli) app to get started and to know more about the options and configuration parameters to customize the behavior.
-
----
-## Installation
-
-`npm install --save slack-terminalize`
-
----
-## Tests
-
-`npm test`
-
----
-### Code Coverage
-
-`npm run cover`
+"Helps build a command-line system in Slack, to create a custom vocabulary for your bot."
 
 ---
 ### Help and Links

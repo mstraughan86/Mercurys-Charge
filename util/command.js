@@ -45,21 +45,36 @@ var _getCommand = function(userCommand) {
 	if (!userCommand) {
 		return util.config.get('ERROR_COMMAND');
 	}
-  // this is to escape characters in the user command that have sepcial meaning in regex
-  // so if the command is `help?` then it replaces it with `help\?`, so when used in further matching
- // takes the `?` literally and not as `any single character`	
-  userCommand = userCommand.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-	var pattern = new RegExp('\\[(([^\\[]*[,])?' + userCommand + '[^\\]]*)\\]', 'i'),
-		matches = cmdPattern.match(pattern) && cmdPattern.match(pattern)[0];
 
-	if (!matches) {
-		return util.config.get('ERROR_COMMAND');
+  var strictMode = util.config.get('STRICT_READ_MODE');
+
+	if (strictMode) {
+    userCommand = userCommand.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+    var pattern = new RegExp('\\[(([^\\[]*[,])?' + userCommand + ')[\\]|,]', 'i'),
+      matches = cmdPattern.match(pattern);
+
+    if (!matches) {
+      return util.config.get('ERROR_COMMAND');
+    }
+
+    return matches[1].split(',')[0];
 	}
+	else {
+		// this is to escape characters in the user command that have sepcial meaning in regex
+    // so if the command is `help?` then it replaces it with `help\?`, so when used in further matching
+    // takes the `?` literally and not as `any single character`
+    userCommand = userCommand.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+    var pattern = new RegExp('\\[(([^\\[]*[,])?' + userCommand + '[^\\]]*)\\]', 'i'),
+      matches = cmdPattern.match(pattern) && cmdPattern.match(pattern)[0];
 
-	var	strippedMatch = ( matches.match(/\[(.*)\]/) && matches.match(/\[(.*)\]/)[1] ) || '',
-		aliases = strippedMatch.split(',') || [];
-	return aliases.length ? aliases[0] : util.config.get('ERROR_COMMAND');
+    if (!matches) {
+      return util.config.get('ERROR_COMMAND');
+    }
 
+    var	strippedMatch = ( matches.match(/\[(.*)\]/) && matches.match(/\[(.*)\]/)[1] ) || '',
+      aliases = strippedMatch.split(',') || [];
+    return aliases.length ? aliases[0] : util.config.get('ERROR_COMMAND');
+  }
 };
 
 var init = function () {

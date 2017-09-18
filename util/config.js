@@ -1,9 +1,9 @@
 'use strict';
 
 var path = require('path'),
-	// assuming this module is in <your-app>/node_modules/slack-terminalize/util
-	parentDirectory = path.resolve(__dirname, '../../..'),
-	config;
+  // assuming this module is in <your-app>/node_modules/slack-terminalize/util
+  parentDirectory = path.resolve(__dirname, '../../..'),
+  config;
 
 /**
  * Initializes config on startup. Four important parameters it looks for:
@@ -14,7 +14,7 @@ var path = require('path'),
  * 	  the module looks for this named file in COMMAND_DIR directory. For example, if ERROR_COMMAND is 'app-error',
  * 	  it looks for and calls 'error.js' from COMMAND_DIR directory
  * 5. COMMAND_DELIM: delimiter to split message into tokens(not configurable, uses space (' ') character)
- * 
+ *
  * Since this module is to be used by some parent module, usually this project will be found inside node_modules,
  * hence the default directory for CONFIG_DIR and COMMAND_DIR are ../../../<config|commands>, that's equaivalent to
  * <parent-project-root>/<config|commands>.
@@ -23,22 +23,26 @@ var path = require('path'),
  * @return { none }
  */
 var init = function (userConfig) {
-	config = {};
-	userConfig = userConfig || {};
+  config = {};
+  userConfig = userConfig || {};
 
-	// copy userConfig to config
-	Object.keys(userConfig).forEach(function(el) { config[el] = userConfig[el]; });
+  console.log('userConfig:');
+  console.log(userConfig);
 
-	config['CONFIG_DIR'] 		 	= config['CONFIG_DIR'] || path.resolve(parentDirectory, 'config');
-	config['COMMAND_DIR'] 		 	= config['COMMAND_DIR'] || path.resolve(parentDirectory, 'commands');
-	config['SPACE_REPLACEMENT'] 	= config['SPACE_REPLACEMENT'] || '{SPACE}';
-	config['ERROR_COMMAND'] 		= config['ERROR_COMMAND'] || 'error';
-	config['COMMAND_DELIM'] 		= ' ';
+  // copy userConfig to config
+  Object.keys(userConfig).forEach(function(el) { config[el] = userConfig[el]; });
+
+  config['STRICT_READ_MODE'] 		 	= config['STRICT_READ_MODE'] || false;
+  config['CONFIG_DIR'] 		 	= config['CONFIG_DIR'] || path.resolve(parentDirectory, 'config');
+  config['COMMAND_DIR'] 		 	= config['COMMAND_DIR'] || path.resolve(parentDirectory, 'commands');
+  config['SPACE_REPLACEMENT'] 	= config['SPACE_REPLACEMENT'] || '{SPACE}';
+  config['ERROR_COMMAND'] 		= config['ERROR_COMMAND'] || 'error';
+  config['COMMAND_DELIM'] 		= ' ';
 
 };
 
 var get = function (property) {
-	return (property && config[property]);
+  return (property && config[property]);
 };
 
 exports.init = init;
