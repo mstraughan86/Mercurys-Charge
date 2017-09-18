@@ -13,13 +13,13 @@ const channel = {
 const version = "Mercury Prototype Version " + require('./package.json')['version'];
 
 // Slack Bot Server
-const mercury = require('slack-terminalize');
+const mercury = require('./lib/index.js').mercury;
 
 //~~~~~ Slack Bot Server
 const initSlackBot = () => {
   return new Promise(resolve => {
     const slackToken = fs.readFileSync("./config/token.txt").toString('utf-8');
-    
+
     mercury.init(slackToken,
       {
         // slack rtm client options: https://github.com/slackhq/node-slack-client/blob/master/lib/clients/rtm/client.js
@@ -33,7 +33,7 @@ const initSlackBot = () => {
 
     util = require('./util.js');
     rtmClient = mercury.getRTMClient();
-    CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
+    CLIENT_EVENTS = require('./lib/Mercury/node_modules/@slack/client').CLIENT_EVENTS;
 
     const resolvePromise = () => {
       console.log('--- RTM_CONNECTION_OPENED');

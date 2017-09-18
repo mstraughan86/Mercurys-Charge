@@ -1,4 +1,4 @@
-var slackTerminal 	= require('slack-terminalize'),
+var slackTerminal 	= require('../lib/').mercury,
 	commands 		= slackTerminal.getCommands(),
 	util			= require('../util');
 

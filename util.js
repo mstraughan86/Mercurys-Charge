@@ -1,4 +1,4 @@
-var webClient = require('slack-terminalize').getWebClient();
+const webClient = require('./lib').mercury.getWebClient();
 /**
  * Wrapper function for postMessage from slack-client to handle formatting.
  * 
@@ -8,7 +8,7 @@ var webClient = require('slack-terminalize').getWebClient();
  * @return { none }
  * 
  */
-var postMessage = function (channel, response, format) {
+const postMessage = (channel, response, format) => {
 
 	format = format || true;
 	response = (format && '```' + response + '```') || response;
