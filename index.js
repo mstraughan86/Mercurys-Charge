@@ -1,65 +1,54 @@
-var fs = require("fs");
-var token = fs.readFileSync("./config/token.txt").toString('utf-8');
-var path = fs.readFileSync("./config/path.txt").toString('utf-8');
-var secret = fs.readFileSync("./config/secret.txt").toString('utf-8');
-var port = fs.readFileSync("./config/port.txt").toString('utf-8');
-var channel = {
-    default : '#event-importer',
-    system : '#jeeves-system'    
-}
-var version = "Jeeves Prototype Version 0.3.0";
+const fs = require("fs");
+
+const token = fs.readFileSync("./config/token.txt").toString('utf-8');
+const path = fs.readFileSync("./config/path.txt").toString('utf-8');
+const secret = fs.readFileSync("./config/secret.txt").toString('utf-8');
+const port = fs.readFileSync("./config/port.txt").toString('utf-8');
+
+const channel = {
+  default: '#event-importer',
+  system: '#jeeves-system'
+};
+
+const version = "Mercury Prototype Version " + require('./package.json')['version'];
 
 // Slack Bot Server
-var slackTerminal = require('slack-terminalize');
+const mercury = require('slack-terminalize');
 
-slackTerminal.init(token, {
-    // slack rtm client options here
-    // more info at: https://github.com/slackhq/node-slack-client/blob/master/lib/clients/rtm/client.js
-}, {
-    // app configurations to suit your project structure
-    // to see the list of all possible config,
-    // check this out: https://github.com/ggauravr/slack-terminalize/blob/master/util/config.js
-    CONFIG_DIR: __dirname + '/config',
-    COMMAND_DIR: __dirname + '/commands'
-});
-
-
-// GitHiub Listener Server
-var http = require('http');
-var createHandler = require('github-webhook-handler');
-var handler = createHandler({path: path, secret: secret});
-
-var util = require('./util');
-var updater = require('./commands/system.js')
-
-http.createServer(function (req, res) {
-    //debugging what hits our /github-webhook
-    console.log(req.url);
+//~~~~~ Slack Bot Server
+const initSlackBot = () => {
+  return new Promise(resolve => {
+    const slackToken = fs.readFileSync("./config/token.txt").toString('utf-8');
     
-    handler(req, res, function (err) {
-        res.statusCode = 404
-        res.end('no such location')
-    })
-}).listen(port);
+    mercury.init(slackToken,
+      {
+        // slack rtm client options: https://github.com/slackhq/node-slack-client/blob/master/lib/clients/rtm/client.js
+      },
+      {
+        STRICT_READ_MODE: true,
+        CONFIG_DIR: __dirname + '/config',
+        COMMAND_DIR: __dirname + '/commands'
+      }
+    );
 
-handler.on('error', function (err) {
-    console.error('Error:', err.message);
-});
+    util = require('./util.js');
+    rtmClient = mercury.getRTMClient();
+    CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 
-handler.on('push', function (event) {
-    util.postMessage(channel.system, 'Received a push event for ' +
-            event.payload.repository.name +
-            ' to ' +
-            event.payload.ref);
-    console.log('Received a push event for %s to %s',
-            event.payload.repository.name,
-            event.payload.ref);
+    const resolvePromise = () => {
+      console.log('--- RTM_CONNECTION_OPENED');
+      rtmClient.off(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, resolvePromise); // listener clean-up
+      resolve();
+    };
 
-    // exectute the auto update code
-    updater( { args:['update', ''], channel:channel.system } );
+    rtmClient.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, resolvePromise); // Initiate eventListener
+  });
+};
 
-});
+//~~~~~ Main Function
+const main = () => {
+  initSlackBot()
+    .then(() => util.postMessage(channel.system, `${version}\nInitialization finished. Listening for commands.`));
+};
 
-
-// Inform Slack that we have come online.
-util.postMessage(channel.system, "Online, as " + version);
+main();

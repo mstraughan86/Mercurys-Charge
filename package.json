@@ -1,12 +1,26 @@
 {
-  "name": "Emeralda-AI",
-  "version": "0.3.0",
+  "name": "Mercurys-Charge",
+  "version": "0.0.1",
+  "description": "Slack chatbot that is based off of Mercury",
+  "main": "index.js",
   "auto-updater": {
-    "repo": "mstraughan86/Emeralda-AI",
+    "repo": "mstraughan86/Mercurys-Charge",
     "branch": "master"
   },
-  "description": "",
-  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mstraughan86/Mercurys-Charge.git"
+  },
+  "keywords": [
+    "slack",
+    "mercury"
+  ],
+  "author": "Michael Straughan",
+  "license": "ISC",
   "dependencies": {
     "auto-updater": "^1.0.2",
     "forever": "^0.15.3",
@@ -15,20 +29,7 @@
     "request": "^2.65.0",
     "slack-terminalize": "^1.0.2"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:mstraughan86/Emeralda-AI.git"
-  },
   "engines": {
     "node": "0.12.x"
-  },
-  "keywords": [
-    "slack",
-    "terminal"
-  ],
-  "author": "Michael Straughan",
-  "license": "MIT"
+  }
 }
