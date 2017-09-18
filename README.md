@@ -16,3 +16,4 @@ Description from the original project:
 - [Slack Node Client](https://github.com/slackhq/node-slack-client)
 - [How to create and publish your first npm module](https://medium.com/@jdaudier/how-to-create-and-publish-your-first-node-js-module-444e7585b738#.blw7wmjwl)
 - [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+- [Brainstorm Here!](https://github.com/matiassingers/awesome-slack#javascript)
