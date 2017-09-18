@@ -1,0 +1,35 @@
+{
+  "name": "Mercury",
+  "version": "0.0.1",
+  "description": "Mercury, the herald diviner-god. Ask and things happen.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha test/* --reporter spec",
+    "cover": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mstraughan86/Mercury.git"
+  },
+  "keywords": [
+    "slack",
+    "terminal",
+    "cli",
+    "hubot"
+  ],
+  "author": "Michael Straughan",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/client": "^2.3.0",
+    "winston": "^2.2.0"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "coveralls": "^2.11.4",
+    "istanbul": "^0.4.0",
+    "mocha": "^2.3.4"
+  }
+}
