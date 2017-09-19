@@ -5,6 +5,9 @@ const checkCronPattern = (pattern) => {
   try { new CronJob(pattern, () => { return true }) }
   catch (ex) { return false }
 };
+
+// currently, this function reallly checks against a cron job, not the
+// advanced list inthe switch below. Need to update it!
 const errorParseCommand = (args) => {
   let results = {errors: []};
 
@@ -18,7 +21,7 @@ const errorParseCommand = (args) => {
 
   if (args.length <= 6) {
     results.errors.push(`Insufficient command length. See 'cron help' for instructions.`);
-    results.errorMessage = results.errors.join('\n');
+    results.message = results.errors.join('\n');
     return results;
   }
 
@@ -33,22 +36,27 @@ const errorParseCommand = (args) => {
     results.errors.push(`Command ${args[6]}: Is not a known command or alias.`);
   }
 
-  results.errorMessage = results.errors.join('\n');
+  const cronPattern = args.slice(0,6).join(' ');
+  if (checkCronPattern(cronPattern)) {
+    results.errors.push(`Cron Pattern '${cronPattern}': Doesn't pass the test!`);
+  }
+
+  results.message = results.errors.join('\n');
   return results;
 };
 
-module.exports = function (param) {
+// module.exports = function (param) {
 
-  let sitemapRegeneration = new CronJob({
-    cronTime: '*/5 * * * * *',       // Runs everyday at 04:30
-    onTick: util.postMessage.bind(null, param.channel, 'Cron.'),             // Execute updateEvents() at cronTime
-    //runOnInit: true,                // Fire immediately
-    start: true,                      // Start script (to fire at cronTime)
-    timeZone: 'America/Los_Angeles'   // ...?
-  });
+//   let sitemapRegeneration = new CronJob({
+//     cronTime: '*/5 * * * * *',       // Runs everyday at 04:30
+//     onTick: util.postMessage.bind(null, param.channel, 'Cron.'),             // Execute updateEvents() at cronTime
+//     //runOnInit: true,                // Fire immediately
+//     start: true,                      // Start script (to fire at cronTime)
+//     timeZone: 'America/Los_Angeles'   // ...?
+//   });
 
 
-};
+// };
 
 // I need to record
 // parse the input.
@@ -62,40 +70,52 @@ module.exports = function (param) {
 const main = (param) => {
   const user = param.user;
   const channel = param.channel;
-  //const command = param.args[0];
-  //const arguments = param.args.slice(1);
-  const arguments = param.args;
+  const command = param.args[0];
+  const arguments = param.args.slice(1);
+  //const arguments = param.args;
 
-  const verificationResults = errorParseCommand(arguments);
-  if (verificationResults.errorMessage) {
-    console.log(verificationResults.errorMessage);
-    util.postMessage(channel, verificationResults.errorMessage);
+  const error = errorParseCommand(param.args);
+  if (error.message) {
+    console.log(error.message);
+    util.postMessage(channel, error.message);
     return;
   }
-
   
-  // switch (command) {
-  //   case 'help':
-  //     help();
-  //     break;
-  //   case 'import':
-  //     var venuesToScrape = createImportVenueList(commandArguments);
-  //     var venueScrapers = createScrapingCommand(venuesToScrape);
-  //     executeScrapersInSeries(venueScrapers, venuesToScrape);
-  //     break;
-  //   case 'blacklist':
-  //     // add to blacklist HERE.
-  //     setBlacklist(commandArguments);
-  //     break;
-  //   case 'whitelist':
-  //     setWhitelist(commandArguments);
-  //     break;
-  //   case 'show':
-  //     showBlacklist();
-  //     break;
-  //   default:
-  //     util.promisePostMessage(channel, "Expecting something else, type 'scraper help'");
-  //     break;
+  switch (command) { //help, test, list, stop, save load, job
+    case 'help':
+      help();
+      break;
+    case 'test':
+      /*
+      I want to input a test command, have it evaluate the cron time and
+      immediately fire the command itself.
+      The cron time evaluation should specify when it would fire, a basic
+      evaluation message.
+      */
+      testCronJob();
+      break;
+    case 'list':
+    /*
+    List the currently running cron jobs.
+    This means I have to save every cron job we attempt to run.
+    */
+      list();
+      break;
+    case 'stop':
+      stop();
+      break;
+    case 'save':
+      save();
+      break;
+    case 'load':
+      load();
+      break;
+    case 'job':
+      job();
+      break;
+    default:
+      util.postMessage(channel, "Expecting something else, type 'cron help'");
+      break;
   // }
 };
 
