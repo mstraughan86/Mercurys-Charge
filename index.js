@@ -33,7 +33,7 @@ const initSlackBot = () => {
 
     util = require('./util.js');
     rtmClient = mercury.getRTMClient();
-    CLIENT_EVENTS = require('./lib/Mercury/node_modules/@slack/client').CLIENT_EVENTS;
+    CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 
     const resolvePromise = () => {
       console.log('--- RTM_CONNECTION_OPENED');
