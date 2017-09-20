@@ -103,6 +103,34 @@ const helpMessage = () => {
 
   return Promise.resolve(intro + description + commandsDescription);
 };
+const testCronPattern = (args) => {
+  const cronPattern = args.slice(1, 7);
+  const command = args.slice(7, args.length).join(' ');
+
+  cronPattern.forEach((element) => {
+    if(/^[,\*\-\/]+$/.test(element)) {
+      element.replace(/^[\*]+$/, "every");
+      element.replace(/^[\-]+$/, "through");
+      element.replace(/^[,]+$/, " and ");
+      if(/^[\/]+$/.test(element)) {
+        element.replace(/^[\/]+$/, " ");
+        element = element + '-th';
+      }
+    }
+  } 
+
+  const parsedSchedule = "Your cron job schedule: \n" +
+    `     second: ${cronPattern[0]}
+          minute: ${cronPattern[1]}
+            hour: ${cronPattern[2]}
+       monthdate: ${cronPattern[3]}
+           month: ${cronPattern[4]}
+         weekday: ${cronPattern[5]}\n\n`
+  const parsedCommand = "Your cron job command: \n" + command;
+
+  return Promise.resolve(parsedSchedule + parsedCommand);
+};
+
 // module.exports = function (param) {
 //   let sitemapRegeneration = new CronJob({
 //     cronTime: '*/5 * * * * *',       // Runs everyday at 04:30
@@ -130,8 +158,7 @@ const main = (param) => {
              The cron time evaluation should specify when it would fire, a basic
              evaluation message.
              */
-            testCronJob();
-            break;
+            return testCronPattern(args).then(msg => util.postMessage(channel, msg));
           case 'list':
             list();
             break;
