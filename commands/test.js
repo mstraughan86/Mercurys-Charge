@@ -6,10 +6,10 @@ const errorParseCommand = (args) => {
 
   const regexCron = /^[0-9,\*\-\/]+$/;
   const commands = require('../config/commands.json');
-  const commandslist = [];
-  commandslist.push.apply(commandslist, Object.keys(commands));
+  const commandsList = [];
+  commandsList.push.apply(commandsList, Object.keys(commands));
   Object.keys(commands).forEach((command) => {
-    commandslist.push.apply(commandslist, commands[command].alias);
+    commandsList.push.apply(commandsList, commands[command].alias);
   });
 
   const checkCronPattern = (pattern) => {
@@ -40,13 +40,13 @@ const errorParseCommand = (args) => {
     }
   };
   const checkJobCommand = (arg) => {
-    if (!commandslist.includes(arg)) {
-      results.errors.push(`Command ${arg}: Is not a known command or alias.`);
+    if (!commandsList.includes(arg)) {
+      results.errors.push(`Command ${arg}: Is not a known command or command alias.`);
     }
   };
 
-  const command = args[0];
-  if (command == ('job' || 'test' || 'save')) {
+  const command = args[0] || '"No Command"';
+  if (['job', 'test', 'save'].includes(command)) {
     const cronPattern = args.slice(1, 7).join(' ');
 
     checkCommandLength(8);
@@ -54,22 +54,50 @@ const errorParseCommand = (args) => {
     args.slice(1, 7).forEach(checkRegexElement);
     checkCronPattern(cronPattern);
   }
-  else if (command == ('stop' || 'load')) {
+  else if (['stop', 'load'].includes(command)) {
     checkCommandLength(2);
     checkJobCommand(args[1]);
   }
-  else if (command == ('list' || 'help')) {
+  else if (['list', 'help'].includes(command)) {
   }
   else {
     results.errors.push(`Command ${command}: Is not a cron function. See 'cron help' for instructions.`);
   }
-
+  
   results.message = results.errors.join('\n');
   return results;
 };
+const helpMessage = () => {
+  const intro = "Cron Help\n\n";
+  const description = "This is Cron for Slack, a time-based job scheduler that will execute slack commands for you! " +
+    "You can schedule a job using a modified crontab format: second minute hour monthdate month weekday. The ranges " +
+    "for each value are: \n" +
+    "     second: 0-59\n" +
+    "     minute: 0-59\n" +
+    "       hour: 0-23\n" +
+    "  monthdate: 1-31\n" +
+    "      month: 0-11\n" +
+    "    weekday: 0-6\n" +
+    "You also have Asterisks (*), Ranges (1-3,5), and Steps (*/2) available to use. For example, '00 30 11 * * 1-5' " +
+    "means it runs every weekday (Monday through Friday) at 11:30:00 AM. It does not run on Saturday or Sunday. \n\n" +
+    "You must specify every job with a name. This is because every job fires indefinitely until stopped, and is only " +
+    "referenced by its designated name. No spaces are allowed in your name and quotes don't help. \n\n" +
+    "You can only fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * help' " +
+    "would fire the help command everyday at midnight, if that is your thing.\n\n";
+  const commandsDescription = [
+    "cron job name * * * * * * command args...  :    Run cron job at designated time. Saves it by name.",
+    "cron test name * * * * * * command args... :    Test cron job pattern and command right now.",
+    "cron save name * * * * * * command args... :    Save cron job. Does not run job.",
+    "cron load name              :    Start cron job by name.",
+    "cron delete name            :    Delete cron job by name.",
+    "cron stop name              :    Stop cron job by name.",
+    "cron list                   :    List all currently running cron jobs and saved cron jobs.",
+    "cron help                   :    Displays this help text.",
+  ].join('\n');
 
+  return Promise.resolve(intro + description + commandsDescription);
+};
 // module.exports = function (param) {
-
 //   let sitemapRegeneration = new CronJob({
 //     cronTime: '*/5 * * * * *',       // Runs everyday at 04:30
 //     onTick: util.postMessage.bind(null, param.channel, 'Cron.'),             // Execute updateEvents() at cronTime
@@ -77,18 +105,7 @@ const errorParseCommand = (args) => {
 //     start: true,                      // Start script (to fire at cronTime)
 //     timeZone: 'America/Los_Angeles'   // ...?
 //   });
-
-
 // };
-
-// I need to record
-// parse the input.
-// record the requested job
-// fire the job
-/*
- Input
- cron * * * * * * start
- */
 
 const main = (param) => {
   const user = param.user;
@@ -97,50 +114,55 @@ const main = (param) => {
   const arguments = param.args.slice(1);
   //const arguments = param.args;
 
+  // Lets make this error parsing the start of our promise chain!
+  // Then we can even catch out on an error in the parsed message!
   const error = errorParseCommand(param.args);
   if (error.message) {
-    console.log(error.message);
     util.postMessage(channel, error.message);
     return;
   }
 
-  switch (command) { //help, test, list, stop, save load, job
-    case 'help':
-      help();
-      break;
-    case 'test':
-      /*
-       I want to input a test command, have it evaluate the cron time and
-       immediately fire the command itself.
-       The cron time evaluation should specify when it would fire, a basic
-       evaluation message.
-       */
-      testCronJob();
-      break;
-    case 'list':
-      /*
-       List the currently running cron jobs.
-       This means I have to save every cron job we attempt to run.
-       */
-      list();
-      break;
-    case 'stop':
-      stop();
-      break;
-    case 'save':
-      save();
-      break;
-    case 'load':
-      load();
-      break;
-    case 'job':
-      job();
-      break;
-    default:
-      util.postMessage(channel, "Expecting something else, type 'cron help'");
-      break;
-    // }
-  }
-  ;
+  (()=>{
+    switch (command) { //help, test, list, stop, save load, job
+      case 'help':
+        return helpMessage().then(msg => util.postMessage(channel, msg));
+      case 'test':
+        /*
+         I want to input a test command, have it evaluate the cron time and
+         immediately fire the command itself.
+         The cron time evaluation should specify when it would fire, a basic
+         evaluation message.
+         */
+        util.postMessage(channel, "Stupid.");
+        testCronJob();
+        break;
+      case 'list':
+        /*
+         List the currently running cron jobs.
+         This means I have to save every cron job we attempt to run.
+         */
+        list();
+        break;
+      case 'stop':
+        stop();
+        break;
+      case 'save':
+        save();
+        break;
+      case 'load':
+        load();
+        break;
+      case 'job':
+        job();
+        break;
+      default:
+        util.postMessage(channel, "Expecting something else, type 'cron help'");
+        break;
+      // }
+    }
+  })()
+    .then()
+    .catch();
+  };
 
   module.exports = main;

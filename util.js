@@ -9,15 +9,23 @@ const webClient = require('./lib').mercury.getWebClient();
  * 
  */
 const postMessage = (channel, response, format) => {
-
-	format = format || true;
-	response = (format && '```' + response + '```') || response;
+	return new Promise ((resolve, reject)=>{
+    format = format || true;
+    response = (format && '```' + response + '```') || response;
 
     // more on this API here: https://api.slack.com/methods/chat.postMessage
-	webClient.chat.postMessage(channel, response, {
-		as_user: true
-	});
-
+    webClient.chat.postMessage(channel, response, {
+      as_user: true
+    }, (err, res) => {
+      if (err) reject({
+      	name: 'util.postMessage',
+				type: 'Slack',
+				message: 'Slack error on postMessage.',
+				error: err
+			});
+      else resolve(res);
+    });
+  })
 };
 
 exports.postMessage = postMessage;
