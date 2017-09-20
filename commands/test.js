@@ -65,7 +65,13 @@ const errorParseCommand = (args) => {
   }
   
   results.message = results.errors.join('\n');
-  return results;
+  if (!!results.message) { return Promise.reject({
+    name: 'cron.errorParseCommand',
+    type: 'Cron',
+    message: 'User entered incorrect command.',
+    error: results.message
+  }) }
+  else { return Promise.resolve(results) }
 };
 const helpMessage = () => {
   const intro = "Cron Help\n\n";
@@ -110,59 +116,44 @@ const helpMessage = () => {
 const main = (param) => {
   const user = param.user;
   const channel = param.channel;
-  const command = param.args[0];
-  const arguments = param.args.slice(1);
-  //const arguments = param.args;
 
-  // Lets make this error parsing the start of our promise chain!
-  // Then we can even catch out on an error in the parsed message!
-  const error = errorParseCommand(param.args);
-  if (error.message) {
-    util.postMessage(channel, error.message);
-    return;
-  }
-
-  (()=>{
-    switch (command) { //help, test, list, stop, save load, job
-      case 'help':
-        return helpMessage().then(msg => util.postMessage(channel, msg));
-      case 'test':
-        /*
-         I want to input a test command, have it evaluate the cron time and
-         immediately fire the command itself.
-         The cron time evaluation should specify when it would fire, a basic
-         evaluation message.
-         */
-        util.postMessage(channel, "Stupid.");
-        testCronJob();
-        break;
-      case 'list':
-        /*
-         List the currently running cron jobs.
-         This means I have to save every cron job we attempt to run.
-         */
-        list();
-        break;
-      case 'stop':
-        stop();
-        break;
-      case 'save':
-        save();
-        break;
-      case 'load':
-        load();
-        break;
-      case 'job':
-        job();
-        break;
-      default:
-        util.postMessage(channel, "Expecting something else, type 'cron help'");
-        break;
-      // }
-    }
-  })()
+  errorParseCommand()
+    .then  ((args) => {
+      const command = param.args[0];
+        switch (command) {
+          case 'help':
+            return helpMessage().then(msg => util.postMessage(channel, msg));
+          case 'test':
+            /*
+             I want to input a test command, have it evaluate the cron time and
+             immediately fire the command itself.
+             The cron time evaluation should specify when it would fire, a basic
+             evaluation message.
+             */
+            testCronJob();
+            break;
+          case 'list':
+            list();
+            break;
+          case 'stop':
+            stop();
+            break;
+          case 'save':
+            save();
+            break;
+          case 'load':
+            load();
+            break;
+          case 'job':
+            job();
+            break;
+          default:
+            return util.postMessage(channel, "Expecting something else, type 'cron help'");
+          // }
+        }
+      })
     .then()
-    .catch();
+    .catch((error)=>{util.postMessage(channel, error.error)});
   };
 
   module.exports = main;
