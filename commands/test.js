@@ -71,7 +71,7 @@ const errorParseCommand = (args) => {
     message: 'User entered incorrect command.',
     error: results.message
   }) }
-  else { return Promise.resolve(results) }
+  else { return Promise.resolve(args) }
 };
 const helpMessage = () => {
   const intro = "Cron Help\n\n";
@@ -118,7 +118,7 @@ const main = (param) => {
   const channel = param.channel;
 
   errorParseCommand()
-    .then  ((args) => {
+    .then((args) => {
       const command = param.args[0];
         switch (command) {
           case 'help':
