@@ -122,3 +122,74 @@ var main = function(param) {
 }
 
 module.exports = main;
+
+
+/*
+ let CronJob = require('cron').CronJob;
+
+ // Helper Functions
+ const updateEvents = () => {
+ venueKeyIdPair.forEach((venue) => {
+ let venueName = Object.keys(venue);
+ let date = `?date=` + moment().add(daysRangeForEvents, 'days').format('YYYY-MM-DD');
+ let yesterday = `?date=` + moment().add(-1, 'days').format('YYYY-MM-DD');
+ sitemap.add({
+ "url": currentCity + venueName + date,
+ "changefreq": defaultChangefreq,
+ "priority": defaultPriority,
+ "lastmodrealtime": true
+ });
+ sitemap.del(currentCity + venueName + yesterday);
+ });
+ };
+ const generate90DaysOfEvents = (urlArray) => {
+ venueKeyIdPair.forEach((venue) => {
+ let venueName = Object.keys(venue);
+ for (let i = 0; i <= daysRangeForEvents; i++) {
+ let date = `?date=` + moment().add(i, 'days').format('YYYY-MM-DD');
+ urlArray.push({
+ "url": currentCity + venueName + date,
+ "changefreq": defaultChangefreq,
+ "priority": defaultPriority,
+ "lastmodrealtime": true
+ });
+ }
+ });
+ return urlArray;
+ };
+ const generateStaticUrlArray = () => {
+ const urlArray = [];
+ staticPages.forEach((page) => {
+ if (page['hide'] !== undefined || page['httpreq'] === 'post') {
+ // Do not include this page
+ } else {
+ urlArray.push({
+ "url": page.url,
+ "changefreq": page.changefreq,
+ "priority": page.priority,
+ "lastmodrealtime": true
+ });
+ }
+ });
+ venueKeyIdPair.forEach((venue) => {
+ let venueName = Object.keys(venue);
+ urlArray.push({
+ "url": (currentCity + venueName),
+ "changefreq": defaultChangefreq,
+ "priority": defaultPriority,
+ "lastmodrealtime": true
+ });
+ });
+ return urlArray;
+ };
+
+ let sitemapRegeneration = new CronJob({
+ cronTime: '00 30 04 * * *',       // Runs everyday at 04:30
+ onTick: updateEvents,             // Execute updateEvents() at cronTime
+ //runOnInit: true,                // Fire immediately
+ start: true,                      // Start script (to fire at cronTime)
+ timeZone: 'America/Los_Angeles'   // ...?
+ });
+
+
+ */
