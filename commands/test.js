@@ -13,18 +13,12 @@ const errorParseCommand = (args) => {
   });
 
   const checkCronPattern = (pattern) => {
-    let cronCheck;
     try {
       new CronJob(pattern, () => {
-        cronCheck = true
       })
     }
     catch (ex) {
-      cronCheck = false
-    }
-
-    if (cronCheck) {
-      results.errors.push(`Cron Pattern '${cronPattern}': Doesn't pass the test!`);
+      results.errors.push(`Cron Pattern '${pattern}': Doesn't pass the test!`);
     }
   };
   const checkRegexElement = (arg, i) => {
@@ -33,7 +27,7 @@ const errorParseCommand = (args) => {
     }
   };
   const checkCommandLength = (int) => {
-    if (args.length <= int) {
+    if (args.length < int) {
       results.errors.push(`Insufficient command length. See 'cron help' for instructions.`);
       results.message = results.errors.join('\n');
       return results;
@@ -47,12 +41,16 @@ const errorParseCommand = (args) => {
 
   const command = args[0] || '"No Command"';
   if (['job', 'test', 'save'].includes(command)) {
-    const cronPattern = args.slice(1, 7).join(' ');
+    const cronPattern = args.slice(2, 8).join(' ');
 
-    checkCommandLength(8);
-    checkJobCommand(args[7]);
-    args.slice(1, 7).forEach(checkRegexElement);
+    checkCommandLength(9);
+    checkJobCommand(args[8]);
+    args.slice(2, 8).forEach(checkRegexElement);
     checkCronPattern(cronPattern);
+    // Check deeper, if no symbol, each number range.
+    // or deconstruct with certain symbol, check each number.
+    // YES
+
   }
   else if (['stop', 'load'].includes(command)) {
     checkCommandLength(2);
@@ -63,15 +61,19 @@ const errorParseCommand = (args) => {
   else {
     results.errors.push(`Command ${command}: Is not a cron function. See 'cron help' for instructions.`);
   }
-  
+
   results.message = results.errors.join('\n');
-  if (!!results.message) { return Promise.reject({
-    name: 'cron.errorParseCommand',
-    type: 'Cron',
-    message: 'User entered incorrect command.',
-    error: results.message
-  }) }
-  else { return Promise.resolve(args) }
+  if (!!results.message) {
+    return Promise.reject({
+      name: 'cron.errorParseCommand',
+      type: 'Cron',
+      message: 'User entered incorrect command.',
+      error: results.message
+    })
+  }
+  else {
+    return Promise.resolve(args)
+  }
 };
 const helpMessage = () => {
   const intro = "Cron Help\n\n";
@@ -104,28 +106,40 @@ const helpMessage = () => {
   return Promise.resolve(intro + description + commandsDescription);
 };
 const testCronPattern = (args) => {
-  const cronPattern = args.slice(1, 7);
-  const command = args.slice(7, args.length).join(' ');
+  const input = args.join(' ');
+  const cronPattern = args.slice(2, 8);
+  const name = args[1];
+  const command = args.slice(8, args.length).join(' ');
+  const dayMap = {0:'Sun',1:'Mon',2:'Tues',3:'Wed',4:'Thu',5:'Fri',6:'Sat'};
 
-  cronPattern.forEach((element) => {
-    if(/^[,\*\-\/]+$/.test(element)) {
-      element.replace(/^[\*]+$/, "every");
-      element.replace(/^[\-]+$/, "through");
-      element.replace(/^[,]+$/, " and ");
-      if(/^[\/]+$/.test(element)) {
-        element.replace(/^[\/]+$/, " ");
+  cronPattern[5] = cronPattern[5]
+    .split('')
+    .map(c => dayMap[c] || c)
+    .join('');
+
+  cronPattern.forEach((element, index, array) => {
+    if (/[,\*\-\/]/.test(element)) {
+      element = element.replace(/[\*]/, "every");
+      element = element.replace(/[\-]/, " through ");
+      element = element.replace(/[,]/, " and ");
+      if (/[\/]/.test(element)) {
+        element = element.replace(/[\/]/, " ");
         element = element + '-th';
       }
+      array[index] = element;
     }
-  } 
+  });
 
-  const parsedSchedule = "Your cron job schedule: \n" +
-    `     second: ${cronPattern[0]}
+  const parsedSchedule = `
+Your input: ${input}
+Your cron job name: ${name}
+Your cron job schedule:
+          second: ${cronPattern[0]}
           minute: ${cronPattern[1]}
             hour: ${cronPattern[2]}
        monthdate: ${cronPattern[3]}
            month: ${cronPattern[4]}
-         weekday: ${cronPattern[5]}\n\n`
+         weekday: ${cronPattern[5]}\n`;
   const parsedCommand = "Your cron job command: \n" + command;
 
   return Promise.resolve(parsedSchedule + parsedCommand);
@@ -145,42 +159,42 @@ const main = (param) => {
   const user = param.user;
   const channel = param.channel;
 
-  errorParseCommand()
+  errorParseCommand(param.args)
     .then((args) => {
       const command = param.args[0];
-        switch (command) {
-          case 'help':
-            return helpMessage().then(msg => util.postMessage(channel, msg));
-          case 'test':
-            /*
-             I want to input a test command, have it evaluate the cron time and
-             immediately fire the command itself.
-             The cron time evaluation should specify when it would fire, a basic
-             evaluation message.
-             */
-            return testCronPattern(args).then(msg => util.postMessage(channel, msg));
-          case 'list':
-            list();
-            break;
-          case 'stop':
-            stop();
-            break;
-          case 'save':
-            save();
-            break;
-          case 'load':
-            load();
-            break;
-          case 'job':
-            job();
-            break;
-          default:
-            return util.postMessage(channel, "Expecting something else, type 'cron help'");
-          // }
-        }
-      })
+      switch (command) {
+        case 'help':
+          return helpMessage().then(msg => util.postMessage(channel, msg));
+        case 'test':
+          /*
+           I want to input a test command, have it evaluate the cron time and
+           immediately fire the command itself.
+           The cron time evaluation should specify when it would fire, a basic
+           evaluation message.
+           */
+          return testCronPattern(args).then(msg => util.postMessage(channel, msg));
+        case 'list':
+          list();
+          break;
+        case 'stop':
+          stop();
+          break;
+        case 'save':
+          save();
+          break;
+        case 'load':
+          load();
+          break;
+        case 'job':
+          job();
+          break;
+        default:
+          return util.postMessage(channel, "Expecting something else, type 'cron help'");
+        // }
+      }
+    })
     .then()
-    .catch((error)=>{util.postMessage(channel, error.error)});
-  };
+    .catch((error) => {util.postMessage(channel, error.error)});
+};
 
-  module.exports = main;
+module.exports = main;
