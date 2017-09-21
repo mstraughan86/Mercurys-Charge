@@ -13,54 +13,41 @@ const errorParseCommand = (args) => {
   });
 
   const checkCronPatternRange = (patternArray) => {
+    const rangeMap = {
+      0:{start:0,end:59},
+      1:{start:0,end:59},
+      2:{start:0,end:23},
+      3:{start:1,end:31},
+      4:{start:0,end:11},
+      5:{start:0,end:6}
+    };
+    const checkRange = (key, num) => {
+        num = parseInt(num);
+        const start = rangeMap[num]['start'];
+        const end = rangeMap[num]['end']
+        if (num < start || num > end) {
+          results.errors.push(`Position ${key}: ${num} not accepted. Use ${start}-${end}.`);
+        }
+      }
+
     patternArray[0]
       .split(/[^0-9]/)
-      .foreach((num)+>{
-        num = parseInt(num);
-        if (num < 0 || num > 59) {
-          results.errors.push(`Position 0: ${num} not accepted. Use 0-59.`);
-        }
-      })
+      .forEach(checkRange.bind(null, 0));
     patternArray[1]
       .split(/[^0-9]/)
-      .foreach((num)+>{
-        num = parseInt(num);
-        if (num < 0 || num > 59) {
-          results.errors.push(`Position 1: ${num} not accepted. Use 0-59.`);
-        }
-      })
+      .forEach(checkRange.bind(null, 1));
     patternArray[2]
       .split(/[^0-9]/)
-      .foreach((num)+>{
-        num = parseInt(num);
-        if (num < 0 || num > 23) {
-          results.errors.push(`Position 2: ${num} not accepted. Use 0-23.`);
-        }
-      })
+      .forEach(checkRange.bind(null, 2));
     patternArray[3]
       .split(/[^0-9]/)
-      .foreach((num)+>{
-        num = parseInt(num);
-        if (num < 1 || num > 31) {
-          results.errors.push(`Position 3: ${num} not accepted. Use 1-31.`);
-        }
-      })
+      .forEach(checkRange.bind(null, 3));
     patternArray[4]
       .split(/[^0-9]/)
-      .foreach((num)+>{
-        num = parseInt(num);
-        if (num < 0 || num > 11) {
-          results.errors.push(`Position 4: ${num} not accepted. Use 0-11.`);
-        }
-      })
+      .forEach(checkRange.bind(null, 4));
     patternArray[5]
       .split(/[^0-9]/)
-      .foreach((num)+>{
-        num = parseInt(num);
-        if (num < 0 || num > 6) {
-          results.errors.push(`Position 5: ${num} not accepted. Use 0-6.`);
-        }
-      })
+      .forEach(checkRange.bind(null, 5));
   };
   const checkCronPattern = (pattern) => {
     try {
