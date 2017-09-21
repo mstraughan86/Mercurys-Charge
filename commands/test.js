@@ -12,6 +12,56 @@ const errorParseCommand = (args) => {
     commandsList.push.apply(commandsList, commands[command].alias);
   });
 
+  const checkCronPatternRange = (patternArray) => {
+    patternArray[0]
+      .split(/[^0-9]/)
+      .foreach((num)+>{
+        num = parseInt(num);
+        if (num < 0 || num > 59) {
+          results.errors.push(`Position 0: ${num} not accepted. Use 0-59.`);
+        }
+      })
+    patternArray[1]
+      .split(/[^0-9]/)
+      .foreach((num)+>{
+        num = parseInt(num);
+        if (num < 0 || num > 59) {
+          results.errors.push(`Position 1: ${num} not accepted. Use 0-59.`);
+        }
+      })
+    patternArray[2]
+      .split(/[^0-9]/)
+      .foreach((num)+>{
+        num = parseInt(num);
+        if (num < 0 || num > 23) {
+          results.errors.push(`Position 2: ${num} not accepted. Use 0-23.`);
+        }
+      })
+    patternArray[3]
+      .split(/[^0-9]/)
+      .foreach((num)+>{
+        num = parseInt(num);
+        if (num < 1 || num > 31) {
+          results.errors.push(`Position 3: ${num} not accepted. Use 1-31.`);
+        }
+      })
+    patternArray[4]
+      .split(/[^0-9]/)
+      .foreach((num)+>{
+        num = parseInt(num);
+        if (num < 0 || num > 11) {
+          results.errors.push(`Position 4: ${num} not accepted. Use 0-11.`);
+        }
+      })
+    patternArray[5]
+      .split(/[^0-9]/)
+      .foreach((num)+>{
+        num = parseInt(num);
+        if (num < 0 || num > 6) {
+          results.errors.push(`Position 5: ${num} not accepted. Use 0-6.`);
+        }
+      })
+  };
   const checkCronPattern = (pattern) => {
     try {
       new CronJob(pattern, () => {
@@ -41,16 +91,11 @@ const errorParseCommand = (args) => {
 
   const command = args[0] || '"No Command"';
   if (['job', 'test', 'save'].includes(command)) {
-    const cronPattern = args.slice(2, 8).join(' ');
-
     checkCommandLength(9);
     checkJobCommand(args[8]);
     args.slice(2, 8).forEach(checkRegexElement);
-    checkCronPattern(cronPattern);
-    // Check deeper, if no symbol, each number range.
-    // or deconstruct with certain symbol, check each number.
-    // YES
-
+    checkCronPattern(args.slice(2, 8).join(' '));
+    checkCronPatternRange(args.slice(2, 8));
   }
   else if (['stop', 'load'].includes(command)) {
     checkCommandLength(2);
