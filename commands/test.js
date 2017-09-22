@@ -31,12 +31,9 @@ const errorParseCommand = (args) => {
     };
     const regexNonnumeric = /[^0-9]/;
 
-    patternArray[0].split(regexNotNumbers).forEach(checkRange.bind(null, 0));
-    patternArray[1].split(regexNonnumeric).forEach(checkRange.bind(null, 1));
-    patternArray[2].split(regexNonnumeric).forEach(checkRange.bind(null, 2));
-    patternArray[3].split(regexNonnumeric).forEach(checkRange.bind(null, 3));
-    patternArray[4].split(regexNonnumeric).forEach(checkRange.bind(null, 4));
-    patternArray[5].split(regexNonnumeric).forEach(checkRange.bind(null, 5));
+    patternArray.forEach(piece =>{
+      piece.split(regexNotNumbers).forEach(checkRange.bind(null, i));
+    })
   };
   const checkCronPattern = (pattern) => {
     try {
@@ -146,7 +143,7 @@ const testCronPattern = (args) => {
       if (/[\/]/.test(element)) {
         element = element.replace(/[\/]/, " ");
         element = element + '-th';
-      }
+      } 
       array[index] = element;
     }
   });
@@ -165,6 +162,105 @@ Your cron job schedule:
 
   return Promise.resolve(parsedSchedule + parsedCommand);
 };
+
+const saveCronPattern = (args) => {
+  const input = args.join(' ');
+  const cronPattern = args.slice(2, 8);
+  const name = args[1];
+  const command = args.slice(8, args.length).join(' ');
+
+
+  var venuesDirFromRootDir = './commands/scraper/venues/';
+  
+  fs.readdir(venuesDirFromRootDir, function (err, files) {
+    files.forEach(function (filename) {
+      supportedVenues.push(filename.split('.')[0]);
+    });
+  });
+
+  // ---- Blacklist/Whitelist Subsystem ---- //
+
+  // Display both venue black and white lists
+  let showBlacklist = function () {
+    let messageTitle = "Show Blacklist and Whitelist\n\n"
+    let blacklistedVenues = "Blacklist:\n" + getBlacklist().join(', ');
+    let whitelistedVenues = "\n\nWhitelist:\n" + getWhitelist().join(', ');
+
+    util.promisePostMessage(channel, messageTitle + blacklistedVenues + whitelistedVenues);
+  };
+
+  // Derive the venue white from config.json and supportedVenues
+  let getWhitelist = function () {
+
+    let blacklistedVenuesArray = getBlacklist();
+    return supportedVenues.filter(function (venue) {
+      return !blacklistedVenuesArray.includes(venue);
+    });
+  };
+
+  // Remove a venue from the scraper blacklist in config.json
+  let setWhitelist = function (venuesToWhitelist) {
+    loadConfigurationFile();
+
+    let blacklistedVenuesArray = nconf.get('blacklist');
+    venuesToWhitelist.forEach((venue) => {
+      let i = blacklistedVenuesArray.indexOf(venue);
+      if (i > -1) {
+        blacklistedVenuesArray.splice(i, 1);
+      }
+    });
+
+    saveConfigurationFile();
+    let message = 'Blacklisted Venues: \n' + blacklistedVenuesArray;
+    util.promisePostMessage(channel, message);
+  };
+
+  // Get the venue blacklist in config.json
+  let getBlacklist = function () {
+    loadConfigurationFile();
+    return nconf.get('blacklist');
+
+    // consider checking if nconf config file even HAS blacklist.
+    // this might be very simple.
+
+  };
+
+  // Add a venue to the scraper blacklist in config.json
+  let setBlacklist = function (venuesToBlacklist) {
+    loadConfigurationFile();
+
+    let blacklistedVenuesArray = nconf.get('blacklist');
+    venuesToBlacklist.forEach((venue) => {
+      if (blacklistedVenuesArray.indexOf(venue) < 0) {
+        blacklistedVenuesArray.push(venue);
+      }
+    });
+
+    saveConfigurationFile();
+    let message = 'Blacklisted Venues: \n' + blacklistedVenuesArray;
+    util.promisePostMessage(channel, message);
+  };
+
+  // Save config.json file using nconf
+  let saveConfigurationFile = function () {
+    nconf.save(function (err) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      console.log('Configuration saved successfully.');
+    });
+  };
+
+  // Load config.json file using nconf
+  let loadConfigurationFile = function () {
+    let scraperConfig = './config/scraper_config.json';
+    nconf.file({file: scraperConfig});
+    nconf.load();
+  };
+};
+
+
 
 // module.exports = function (param) {
 //   let sitemapRegeneration = new CronJob({
@@ -193,13 +289,15 @@ const main = (param) => {
           stop();
           break;
         case 'save':
-          save();
+          saveCronPattern();
           break;
         case 'load':
           load();
           break;
         case 'job':
           job();
+          break;
+        case 'delete': //zero work has been done to integrate this. even in error parsing.
           break;
         default:
           return util.postMessage(channel, "Expecting something else, type 'cron help'");
