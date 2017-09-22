@@ -22,32 +22,21 @@ const errorParseCommand = (args) => {
       5:{start:0,end:6}
     };
     const checkRange = (key, num) => {
-        num = parseInt(num);
-        const start = rangeMap[num]['start'];
-        const end = rangeMap[num]['end']
-        if (num < start || num > end) {
-          results.errors.push(`Position ${key}: ${num} not accepted. Use ${start}-${end}.`);
-        }
+      num = parseInt(num);
+      const start = rangeMap[key]['start'];
+      const end = rangeMap[key]['end'];
+      if (num < start || num > end) {
+        results.errors.push(`Position ${key}: ${num} not accepted. Use ${start}-${end}.`);
       }
+    };
+    const regexNonnumeric = /[^0-9]/;
 
-    patternArray[0]
-      .split(/[^0-9]/)
-      .forEach(checkRange.bind(null, 0));
-    patternArray[1]
-      .split(/[^0-9]/)
-      .forEach(checkRange.bind(null, 1));
-    patternArray[2]
-      .split(/[^0-9]/)
-      .forEach(checkRange.bind(null, 2));
-    patternArray[3]
-      .split(/[^0-9]/)
-      .forEach(checkRange.bind(null, 3));
-    patternArray[4]
-      .split(/[^0-9]/)
-      .forEach(checkRange.bind(null, 4));
-    patternArray[5]
-      .split(/[^0-9]/)
-      .forEach(checkRange.bind(null, 5));
+    patternArray[0].split(regexNotNumbers).forEach(checkRange.bind(null, 0));
+    patternArray[1].split(regexNonnumeric).forEach(checkRange.bind(null, 1));
+    patternArray[2].split(regexNonnumeric).forEach(checkRange.bind(null, 2));
+    patternArray[3].split(regexNonnumeric).forEach(checkRange.bind(null, 3));
+    patternArray[4].split(regexNonnumeric).forEach(checkRange.bind(null, 4));
+    patternArray[5].split(regexNonnumeric).forEach(checkRange.bind(null, 5));
   };
   const checkCronPattern = (pattern) => {
     try {
@@ -195,16 +184,8 @@ const main = (param) => {
     .then((args) => {
       const command = param.args[0];
       switch (command) {
-        case 'help':
-          return helpMessage().then(msg => util.postMessage(channel, msg));
-        case 'test':
-          /*
-           I want to input a test command, have it evaluate the cron time and
-           immediately fire the command itself.
-           The cron time evaluation should specify when it would fire, a basic
-           evaluation message.
-           */
-          return testCronPattern(args).then(msg => util.postMessage(channel, msg));
+        case 'help': return helpMessage().then(msg => util.postMessage(channel, msg));
+        case 'test': return testCronPattern(args).then(msg => util.postMessage(channel, msg)); // doesn't run the command.
         case 'list':
           list();
           break;
