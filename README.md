@@ -4,13 +4,8 @@
 ## Description
 This is Cron for Slack, a time-based job scheduler that will execute slack commands for you! This is built to be a module addon for the [Mercury](https://github.com/mstraughan86/Mercury) based chatbot [Mercury's Charge](https://github.com/mstraughan86/Mercurys-Charge).
 
-## Development Installation
-```
-git remote add -f Mercury git@github.com:mstraughan86/Mercury.git
-git merge -s ours --no-commit --allow-unrelated-histories Mercury/master
-git read-tree --prefix=lib/Mercury -u Mercury/master
-git commit -m "Subtree merged in Mercury"
-```
+## Installation
+See [Mercury's Charge](https://github.com/mstraughan86/Mercurys-Charge) installation instructions.
 
 ## Configuration && Execution
 ```
@@ -27,8 +22,10 @@ You also have Asterisks (*), Ranges (1-3,5), and Steps (*/2) available to use. F
 means it runs every weekday (Monday through Friday) at 11:30:00 AM. It does not run on Saturday or Sunday.
 You must specify every job with a name. This is because every job fires indefinitely until stopped, and is only
 referenced by its designated name. No spaces are allowed in your name and quotes don't help.
-You can only fire any command available by this slack bot. For example, 'cron job help-everyday 00 00 00 * * * cron help'
+
+You can only fire any command available by this slack bot. Inputting 'cron job example 00 00 00 * * * cron help'
 would fire this help command everyday at midnight, if that is your thing.
+
 If a name is used to save a cron job, you cannot reuse it, you can only load or delete a job with that name.
 To use jobs in specific channels, basically, the job will run from the channel you run or load it from.
 Cron jobs will automatically restart on application load! But only if the job was running at the time of exit,
@@ -37,14 +34,22 @@ and if the job was saved. Running jobs that were not saved will not restart on l
 cron job name * * * * * * command args...  :    Run cron job at designated time. Saves it by name.
 cron test name * * * * * * command args... :    Test cron job pattern and command right now.
 cron save name * * * * * * command args... :    Save cron job. Does not run job.
-cron load name              :    Start cron job by name.
-cron delete name            :    Delete cron job by name.
-cron stop name              :    Stop cron job by name.
-cron list                   :    List all currently running cron jobs and saved cron jobs.
-cron help                   :    Displays this help text.
+cron load name                             :    Start cron job by name.
+cron delete name                           :    Delete cron job by name.
+cron stop name                             :    Stop cron job by name.
+cron list                                  :    List all currently running and saved cron jobs.
+cron help                                  :    Displays this help text.
 ```
 
 ## Development
+#### Installation
+```
+git remote add -f Mercury git@github.com:mstraughan86/Mercury.git
+git merge -s ours --no-commit --allow-unrelated-histories Mercury/master
+git read-tree --prefix=lib/Mercury -u Mercury/master
+git commit -m "Subtree merged in Mercury"
+```
+#### Subtree Pushing
 Because this is developed as a subtree in another project repository, I need to push and pull with these git commands:
 ```
 git subtree push --prefix=lib/Mercurys-Sundial Mercurys-Sundial master
