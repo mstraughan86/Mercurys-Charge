@@ -44,10 +44,10 @@ cron help                                  :    Displays this help text.
 ## Development
 #### Installation
 ```
-git remote add -f Mercury git@github.com:mstraughan86/Mercury.git
-git merge -s ours --no-commit --allow-unrelated-histories Mercury/master
-git read-tree --prefix=lib/Mercury -u Mercury/master
-git commit -m "Subtree merged in Mercury"
+git remote add -f Mercurys-Sundial git@github.com:mstraughan86/Mercurys-Sundial.git
+git merge -s ours --no-commit --allow-unrelated-histories Mercurys-Sundial/master
+git read-tree --prefix=lib/Mercurys-Sundial -u Mercurys-Sundial/master
+git commit -m "Subtree merged in Mercurys-Sundial"
 ```
 #### Subtree Pushing
 Because this is developed as a subtree in another project repository, I need to push and pull with these git commands:
