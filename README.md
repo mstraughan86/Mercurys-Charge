@@ -14,7 +14,7 @@ The basis of this fork is summed up in this [pull request](https://github.com/gg
 ## Micro Knowledge Base
 #### Links
 - Software Architecture: [Example](https://github.com/ggauravr/slack-sample-cli)
-- Implementation in Progress: [Scry](https://github.com/mstraughan86/Scry)
+- Implementation in Progress: [Mercury's Charge](https://github.com/mstraughan86/Mercurys-Charge)
 
 #### Documentation
 - [Slack API](https://api.slack.com/)
