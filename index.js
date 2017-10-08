@@ -1,4 +1,8 @@
+require('dotenv').config();
+const COLLECTION = process.env.DB_COLLECTION;
 const fs = require("fs");
+const mongoose = require('./utilities/mongoose.js');
+const mercury = require('./lib/index.js').mercury;
 
 const token = fs.readFileSync("./config/token.txt").toString('utf-8');
 const path = fs.readFileSync("./config/path.txt").toString('utf-8');
@@ -11,9 +15,6 @@ const channel = {
 };
 
 const version = "Mercury Prototype Version " + require('./package.json')['version'];
-
-// Slack Bot Server
-const mercury = require('./lib/index.js').mercury;
 
 //~~~~~ Slack Bot Server
 const initSlackBot = () => {
@@ -36,7 +37,7 @@ const initSlackBot = () => {
     CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 
     const resolvePromise = () => {
-      console.log('--- RTM_CONNECTION_OPENED');
+      console.log('Mercury: RTM Connection Opened.');
       rtmClient.off(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, resolvePromise); // listener clean-up
       resolve();
     };
@@ -48,7 +49,11 @@ const initSlackBot = () => {
 //~~~~~ Main Function
 const main = () => {
   initSlackBot()
+    .then(mongoose.initialize)
+    //.then(mongoose.connect.bind(null, COLLECTION))
     .then(() => util.postMessage(channel.system, `${version}\nInitialization finished. Listening for commands.`));
 };
 
 main();
+
+// I DO WANT TO SOLVE THIS MONGO PROBLEM!

@@ -5,12 +5,19 @@ const errorParseCommand = (args) => {
   let results = {errors: []};
 
   const regexCron = /^[0-9,\*\-\/]+$/;
+
+  // This is what creates the Command List.
+  // This is pretty dependent on Mercury's Charge...
+  // TODO: Abstract this out! Refactor candidate.
+
   const commands = require('../config/commands.json');
   const commandsList = [];
   commandsList.push.apply(commandsList, Object.keys(commands));
   Object.keys(commands).forEach((command) => {
     commandsList.push.apply(commandsList, commands[command].alias);
   });
+
+  // ~~~~
 
   const checkCronPatternRange = (patternArray) => {
     const rangeMap = {
@@ -31,8 +38,8 @@ const errorParseCommand = (args) => {
     };
     const regexNonnumeric = /[^0-9]/;
 
-    patternArray.forEach(piece =>{
-      piece.split(regexNotNumbers).forEach(checkRange.bind(null, i));
+    patternArray.forEach((piece, i, array) =>{
+      piece.split(regexNonnumeric).forEach(checkRange.bind(null, i));
     })
   };
   const checkCronPattern = (pattern) => {
@@ -143,7 +150,7 @@ const testCronPattern = (args) => {
       if (/[\/]/.test(element)) {
         element = element.replace(/[\/]/, " ");
         element = element + '-th';
-      } 
+      }
       array[index] = element;
     }
   });
@@ -162,7 +169,6 @@ Your cron job schedule:
 
   return Promise.resolve(parsedSchedule + parsedCommand);
 };
-
 const saveCronPattern = (args) => {
   const input = args.join(' ');
   const cronPattern = args.slice(2, 8);
@@ -171,7 +177,6 @@ const saveCronPattern = (args) => {
 
 
   var venuesDirFromRootDir = './commands/scraper/venues/';
-  
   fs.readdir(venuesDirFromRootDir, function (err, files) {
     files.forEach(function (filename) {
       supportedVenues.push(filename.split('.')[0]);
@@ -258,9 +263,13 @@ const saveCronPattern = (args) => {
     nconf.file({file: scraperConfig});
     nconf.load();
   };
+
+
+
+
+
+
 };
-
-
 
 // module.exports = function (param) {
 //   let sitemapRegeneration = new CronJob({
@@ -273,6 +282,13 @@ const saveCronPattern = (args) => {
 // };
 
 const main = (param) => {
+  // param object contains the following keys:
+  // 1. command - the primary command name
+  // 2. args - an array of strings, which is user's message posted in the channel, separated by space
+  // 3. user - Slack client user id
+  // 4. channel - Slack client channel id
+  // 5. commandConfig - the json object for this command from config/commands.json
+
   const user = param.user;
   const channel = param.channel;
 
@@ -283,12 +299,20 @@ const main = (param) => {
         case 'help': return helpMessage().then(msg => util.postMessage(channel, msg));
         case 'test': return testCronPattern(args).then(msg => util.postMessage(channel, msg)); // doesn't run the command.
         case 'list':
+          //
           list();
           break;
         case 'stop':
           stop();
           break;
         case 'save':
+
+          // https://www.bennadel.com/blog/3244-non-module-file-paths-are-relative-to-the-working-directory-in-node-js.htm
+          // I need to figure out how to solve relative paths for this. Because i need to test in its own project, + from slack.
+
+          // No, this is not an independent submodule, this will ONLY be used in Slack. there is zero reason to make this modular for paths.
+          // Too much work for zero benefit. Play where it lays.
+
           saveCronPattern();
           break;
         case 'load':

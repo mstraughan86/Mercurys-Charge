@@ -1,3 +1,3 @@
-# How to setup your Scrying Database
+# How to setup your Database
 
 No processes in place to set this up... yet.
