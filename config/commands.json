@@ -6,11 +6,11 @@
 		"description": "To get help on all supported commands, or a specified command"
 	},
 
-	"gem": {
+	"cron": {
 		"alias": [],
-		"endpoint": "https://rubygems.org/api/v1/gems/{gem}.json",
-		"help": "gem [gem-name]",
-		"description": "Fetches details of the specified Ruby gem"
+		"endpoint": "#",
+		"help": "cron help",
+		"description": "Cron for Slack."
 	},
 
 	"error": {
@@ -20,7 +20,7 @@
 	"test": {
 		"alias": [ "teest" , "teeest" , "toast" ],
 		"endpoint": "#",
-		"help": "gem [gem-name]",
+		"help": "test",
 		"description": "My first Slackbot"
 	},
 	

@@ -14,6 +14,8 @@ const channel = {
   system: '#jeeves-system'
 };
 
+let util = require('./util.js');
+
 const version = "Mercury Prototype Version " + require('./package.json')['version'];
 
 //~~~~~ Slack Bot Server
@@ -32,12 +34,13 @@ const initSlackBot = () => {
       }
     );
 
-    util = require('./util.js');
+
     rtmClient = mercury.getRTMClient();
-    CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
+    CLIENT_EVENTS = mercury.CLIENT_EVENTS;
 
     const resolvePromise = () => {
       console.log('Mercury: RTM Connection Opened.');
+      util.initialize(mercury);
       rtmClient.off(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, resolvePromise); // listener clean-up
       resolve();
     };

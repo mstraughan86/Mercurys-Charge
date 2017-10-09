@@ -1,15 +1,18 @@
-const webClient = require('./lib').mercury.getWebClient();
+//const webClient = require('./lib').mercury.getWebClient();
+//const mercury = require('./lib/index.js').mercury;
+let webClient;
+
 /**
  * Wrapper function for postMessage from slack-client to handle formatting.
- * 
+ *
  * @param  { object } slack-client Channel boject
  * @param  { string } message to send to Slack channel
  * @param  { boolean } flag to indicate block formatting
  * @return { none }
- * 
+ *
  */
 const postMessage = (channel, response, format) => {
-	return new Promise ((resolve, reject)=>{
+  return new Promise ((resolve, reject)=>{
     format = format || true;
     response = (format && '```' + response + '```') || response;
 
@@ -18,14 +21,19 @@ const postMessage = (channel, response, format) => {
       as_user: true
     }, (err, res) => {
       if (err) reject({
-      	name: 'util.postMessage',
-				type: 'Slack',
-				message: 'Slack error on postMessage.',
-				error: err
-			});
+        name: 'util.postMessage',
+        type: 'Slack',
+        message: 'Slack error on postMessage.',
+        error: err
+      });
       else resolve(res);
     });
   })
 };
 
+const initialize = (mercury) => {
+  webClient = mercury.getWebClient();
+};
+
 exports.postMessage = postMessage;
+exports.initialize = initialize;
