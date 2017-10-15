@@ -1,4 +1,5 @@
-var util = require('../util');
+const util = require('../util');
+const mercury = require('../index.js');
 
 var user;
 var channel;
@@ -68,11 +69,6 @@ var update = function(){
 var check = function(){
     autoupdater.fire('check');
 }
-var shutdown = function() {
-    process.exit(0);
-    // This doesn't appear to actually stop the process.
-    //process.exitCode = 1;
-}
 
 var main = function(param) {
     // param object contains the following keys:
@@ -95,31 +91,28 @@ var main = function(param) {
     argument = param.args[1];
     
     switch(command) {
-    case 'shutdown':
-        util.postMessage(channel, 'Shutting down.');
-        shutdown();
-        break;
-    case 'restart':
-        util.postMessage(channel, 'Restarting.');
-        shutdown();
-        break;
+    case 'shutdown': return mercury.end(channel);
+    case 'restart': return mercury.end(channel);
     case 'check':
+        console.log('check');
         util.postMessage(channel, 'Checking current code against Github repository!');
-        check();
+        //check();
         break;
     case 'update':
+        console.log('update');
         util.postMessage(channel, 'Updating code from Github repository!');
-        update();
+        //update();
         break;
     case 'version':
-        util.postMessage(channel, 'Checking current Emeralda version.');
-        version();
+        console.log('version');
+        util.postMessage(channel, 'Checking current Mercury version.');
+        //version();
         break;
     
     default:
         util.postMessage(channel, 'No arguments were used with command \'system\'');
     }
-}
+};
 
 module.exports = main;
 

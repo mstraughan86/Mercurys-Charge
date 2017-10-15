@@ -1,34 +1,14 @@
-var slackTerminal 	= require('../lib/').mercury,
-  commands 		= slackTerminal.getCommands(),
-  util			= require('../util');
+const util			= require('../util');
+const moment = require('moment');
 
-var _helpAll = function () {
-  var name,
-    index,
-    command,
-    response = [];
-
-  index = 1;
-  for (name in commands) {
-    command = commands[name];
-
-    if (!command.exclude) {
-      response.push(index++  + '. ' + _helpCommand(name));
-    }
-  }
-
-  return response.join('\n\n');
+const main = (param) => {
+  util.postMessage(param.channel, "Mercury's Charge, test message. Time: " +  moment().format('h:mm:ss a'));
+};
+const init = () => {
+  console.log('Test: Test initialization command.');
 };
 
-var _helpCommand = function (name) {
-  var response = [ commands[name].help, 'Alias: ' + commands[name].alias.join(', '), commands[name].description ];
-
-  return response.join('\n\n');
-};
-
-module.exports = function (param) {
-  var	channel		= param.channel,
-    response;
-
-  util.postMessage(channel, "Mercury's Charge, test message.");
+module.exports = {
+  exec: main,
+  init: init
 };
