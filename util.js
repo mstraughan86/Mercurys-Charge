@@ -1,6 +1,8 @@
 //const webClient = require('./lib').mercury.getWebClient();
-//const mercury = require('./lib/index.js').mercury;
+let rtmClient;
 let webClient;
+
+const delay = time => new Promise(resolve => setTimeout(resolve, time));
 
 /**
  * Wrapper function for postMessage from slack-client to handle formatting.
@@ -32,8 +34,12 @@ const postMessage = (channel, response, format) => {
 };
 
 const initialize = (mercury) => {
+  rtmClient = mercury.getRTMClient();
   webClient = mercury.getWebClient();
 };
 
 exports.postMessage = postMessage;
 exports.initialize = initialize;
+exports.rtmClient = rtmClient;
+exports.webClient = webClient;
+exports.delay = delay;
