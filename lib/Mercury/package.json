@@ -1,6 +1,6 @@
 {
   "name": "Mercury",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Mercury, the herald diviner-god. Ask and things happen.",
   "main": "index.js",
   "scripts": {
@@ -20,8 +20,7 @@
   "author": "Michael Straughan",
   "license": "ISC",
   "dependencies": {
-    "@slack/client": "^2.3.0",
-    "winston": "^2.2.0"
+    "@slack/client": "^2.3.0"
   },
   "engines": {
     "node": "0.10.x"
