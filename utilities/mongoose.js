@@ -8,9 +8,6 @@ const dbpath = process.env.DB_PATH;
 
 mongoose.Promise = global.Promise;
 
-console.log(dbpath);
-console.log(typeof dbpath);
-
 const mongoDB = new mongod({
   port: port,
   dbpath: path.join(__dirname, '..', dbpath)
@@ -33,6 +30,16 @@ const Video = mongoose.model("Video", videoSchema);
 const schemas = {
   Video : Video
 };
+
+const reducePromiseArray = (promises) => {
+  return promises
+    .reduce((chain, promise) => chain.then(promise), Promise.resolve())
+    .then(result => {
+      console.log('Reduce Promise Array complete.');
+      return result;
+    });
+};
+
 
 const initialize = () => {
   return mongoDB.open()
@@ -57,7 +64,7 @@ const connect = (database) => {
     reconnectTries: 30
     /* other options */
   }, ()=>{
-    console.log('Mongoose: Connected.');
+    console.log('Mongoose: Connected to', database);
   });
 };
 const disconnect = () => {
@@ -66,12 +73,27 @@ const disconnect = () => {
 const save = (Model, dataArray) => {
   return new Promise((resolve, reject)=>{
     Model.create(dataArray, function (err, results) {
+      console.log('Mongoose: Saved array of records');
       if (err) return reject(err);
       return resolve(dataArray);
     })
   });
 };
+const remove = (Model, key, value) => {
+  return new Promise((resolve) => {
+    Model.find({[key]: value})
+      .then(results => {
+        return results
+          .reduce((chain, result) => chain.then(()=>{result.remove()}), Promise.resolve())
+          .then(result => {
+            console.log('Mongoose: Deleted all of records with:', key, value);
+            return resolve(result);
+          });
+      });
+  });
+};
 
+const createModel = (name, object) => mongoose.model(name, new mongoose.Schema(object));
 
 module.exports = {
   connect,
@@ -79,5 +101,7 @@ module.exports = {
   initialize,
   terminate,
   save,
+  remove,
+  createModel,
   schemas
 };
