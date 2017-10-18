@@ -8,7 +8,9 @@ Built as a fork from Slack Terminalize, this is a chatbot that can simply be tho
 This is the parent node module to create a Slack Chatbot. This particular bot allows for the configuration of a custom command-line-interface vocabulary that is accessible from a Slack Channel. This is built upon [Slack Terminalize](https://github.com/ggauravr/slack-terminalize).
 
 #### Fork Differences:
-The basis of this fork is summed up in this [pull request](https://github.com/ggauravr/slack-terminalize/pull/13). The original command parse function was way too aggressive with no option to dial it down, so I created a boolean arg to pass on initialization.
+- Very aggressive parsing [explained here](https://github.com/ggauravr/slack-terminalize/pull/13). Added an optional parameter, `STRICT_READ_MODE: true` to alleviate the issue.
+- Initialization Function support. If your javascript requires a function ran prior to application use, its supported! `module.exports = {exec: someFuncExec, init: someFuncInit};`. If you don't require it, simply export a single function `module.exports = mainFunc;` as before.
+- Module Export access to message handler. Have access to the script functions by command message parsing. Try something like `mercury.parseCommand({text:'...',channel:'...'})` to get going.
 
 ---
 ## Micro Knowledge Base
