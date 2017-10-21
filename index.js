@@ -5,10 +5,10 @@ const mongoose = require('./utilities/mongoose.js');
 const mercury = require('./lib/index.js').mercury;
 let rtmClient;
 
-const token = fs.readFileSync("./config/token.txt").toString('utf-8');
-const path = fs.readFileSync("./config/path.txt").toString('utf-8');
-const secret = fs.readFileSync("./config/secret.txt").toString('utf-8');
-const port = fs.readFileSync("./config/port.txt").toString('utf-8');
+const token = process.env.SLACK_API_TOKEN;
+const path = process.env.GITHUB_WEBHOOK_PATH;
+const secret = process.env.GITHUB_API_SECRET;
+const port = process.env.SERVER_PORT;
 
 const channel = {
   default: '#default',
@@ -22,9 +22,7 @@ const version = "Mercury Prototype Version " + require('./package.json')['versio
 //~~~~~ Slack Bot Server
 const initSlackBot = () => {
   return new Promise(resolve => {
-    const slackToken = fs.readFileSync("./config/token.txt").toString('utf-8');
-
-    mercury.init(slackToken,
+    mercury.init(token,
       {
         // slack rtm client options: https://github.com/slackhq/node-slack-client/blob/master/lib/clients/rtm/client.js
       },
