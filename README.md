@@ -1,4 +1,5 @@
 ## Introduction
+###### My word is your command; everything I command, I will empower you to fulfill. Make this pact with me now.
 Mercury's Charge is a Slack chatbot built in Node.js to act as a development platform for custom tooling.
 
 ## Description
@@ -108,7 +109,7 @@ Remember, if the subtree module also uses an ```.env``` file, please do the same
 - [ ] Cross-Platform with Rocket.Chat
 
 ```
-How to develop a submodule:
+How to develop a submodule instructions:
 make an easy echo command.
 
 - show how to make an additional command, using test as the base
