@@ -11,8 +11,7 @@ const secret = process.env.GITHUB_API_SECRET;
 const port = process.env.SERVER_PORT;
 
 const channel = {
-  default: '#default',
-  system: '#jeeves-system'
+  system: process.env.SLACK_SYSTEM_CHANNEL
 };
 
 let util = require('./util.js');
