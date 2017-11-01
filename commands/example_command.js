@@ -1,4 +1,4 @@
-const util			= require('../util');
+const util = require('../util');
 const moment = require('moment');
 
 const main = (param) => {
@@ -13,10 +13,10 @@ const main = (param) => {
   const currentTime = moment().format('h:mm:ss a');
 
   // send back the response, @see: https://api.slack.com/methods/chat.postMessage
-  util.postMessage(param.channel, "Mercury's Charge, example message. Time: " +  currentTime);
+  util.postMessage(param.channel, "Mercury's Charge, example command. Time: " +  currentTime);
 };
 const init = () => {
-  console.log('Example: Example initialization command.');
+  console.log('Example Command: Example initialization command.');
 };
 
 module.exports = {
