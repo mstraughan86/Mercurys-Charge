@@ -16,12 +16,19 @@
 	"error": {
 		"exclude": true
 	},
-	
-	"test": {
-		"alias": [ "teest" , "teeest" , "toast" ],
+
+	"example_command": {
+		"alias": ["ex_cmd"],
 		"endpoint": "#",
-		"help": "test",
-		"description": "My first Slackbot"
+		"help": "example_command",
+		"description": "Example reference for adding a new standalone command."
+	},
+
+	"example_library": {
+		"alias": ["ex_lib"],
+		"endpoint": "#",
+		"help": "example_library",
+		"description": "Example reference for adding a new library."
 	},
 	
 	"updater": {
