@@ -50,7 +50,7 @@ const start = (userChannel = channel.system) => {
   return mongoose.initialize()
     .then(initSlackBot)
     //.then(mongoose.connect.bind(null, COLLECTION))
-    .then(() => util.postMessage(userChannel, `${version}\nInitialization finished. Listening for commands.`));
+    .then(() => util.postMessage(userChannel, `${version}\nInitialized. Listening for commands. Type 'help' to start.`));
 };
 const end = (userChannel = channel.system) => {
   return util.postMessage(userChannel, 'Shutting down Mercury system.')
@@ -63,19 +63,8 @@ const command = (obj) => {
   // obj = {text:'', channel:''}
   mercury.parseCommand(obj);
 };
-const test = () => {return 'hello'};
 
 start();
-
-/*
-  Why wont these work? I am stumped.
-
-  module.exports = {
-    start,
-    end,
-    command
-  };
- */
 
 exports.start 	  = start;
 exports.end 	    = end;
