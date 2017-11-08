@@ -18,6 +18,9 @@ I have found stateless programming to make handling asynchronous web development
 #### Modern
 This is a learning tool as much as it is a professional tool. I want to learn modern coding practices, especially transitioning my asynchronous code to fully Promise-based and afterwards weigh the pros/cons of Async/Await. I also want to develop out chatbot technologies and see if I can integrate bleeding-edge development into this project!
 
+## Preparation
+Create a new Slack [Bot](https://my.slack.com/services/new/bot), give it a name and copy its API token. The token will start with ```xoxb-```.
+
 ## Installation
 ```
 git clone https://github.com/mstraughan86/Mercurys-Charge.git
@@ -25,10 +28,11 @@ cd Mercurys-Charge
 npm install
 npm --prefix ./lib/Mercury install ./lib/Mercury
 npm --prefix ./lib/Mercurys-Sundial install ./lib/Mercurys-Sundial
+npm --prefix ./lib/Example-Library install ./lib/Example-Library
 ```
 
 ## Configuration
-Open the file in root named ```.env``` and insert the following data:
+Open the file in root named ```.env``` and insert Bot API Token:
 ```
 SLACK_API_TOKEN=xoxb-example
 ```
@@ -45,6 +49,16 @@ npm start
 - Mongoose
 - NodeJS
 - Mercury
+
+#### Making a example command:
+1. Make ```./commands/example_command.js```
+2. Add example_command to ```./config/commands.json```
+
+#### Making an example library:
+1. Make ```./commands/example_library.js```
+2. Add example_library to ```./config/commands.json```
+3. Make ```./lib/Example-Library directory```
+4. Add example_library to ```./lib/index.js```
 
 I have created this project so that it utilizes git's subtree functionality, to allow for a "project" within a "project" design. This enables me to keep each subtree within its own repository and the ability to update/upgrade individual subtree modules segregated away from my main application. This goes hand-in-hand with making this project as modular as possible.
 
@@ -93,6 +107,7 @@ Remember, if the subtree module also uses an ```.env``` file, please do the same
 - [ ] Free Tier Enhancements
 - [ ] Continuous Integration with Github
 - [ ] Self-Join Channels Hack
+- [ ] Refactor ./util.js and ./utilities
 - [ ] Raspberry Pi Deployment Instructions
 - [ ] Dockerfile
 
@@ -100,23 +115,9 @@ Remember, if the subtree module also uses an ```.env``` file, please do the same
 - [ ] SMS via Twilio
 - [ ] FB Messenger Integration
 - [ ] IRC Integration
+- [ ] Intercomm Integration
+- [ ] Rocket.Chat Compatibility
 
 #### Games
 - [ ] Legend of the Green Dragon
 - [ ] Other BBS Games
-
-#### Cathedrals
-- [ ] Cross-Platform with Rocket.Chat
-
-```
-How to develop a submodule instructions:
-make an easy echo command.
-
-- show how to make an additional command, using test as the base
-- show how to expand test into a full subtree module with its own repo, using cron as the example.
-	- don't forget the additional stuff you need to put elsewhere in the application for this special part!
-	- usually, its an independent npm install command
-	- and how to access the mongodb stuff, just like cron.
-	- and how we should save the default application state in the .env file.
-	- ... anything else?
-```
