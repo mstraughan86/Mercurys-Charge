@@ -22,6 +22,7 @@ This is a learning tool as much as it is a professional tool. I want to learn mo
 Create a new Slack [Bot](https://my.slack.com/services/new/bot), give it a name and copy its API token. The token will start with ```xoxb-```.
 
 ## Installation
+Install [MongoDB](https://www.mongodb.com/). Then:
 ```
 git clone https://github.com/mstraughan86/Mercurys-Charge.git
 cd Mercurys-Charge
